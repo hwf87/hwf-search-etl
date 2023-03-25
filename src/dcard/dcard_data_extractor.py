@@ -6,38 +6,28 @@ import json
 import logging
 import requests
 import pandas as pd
+from fake_useragent import UserAgent
 from src.CrawlerBase import ExtractorBase
-from utils.utils import log
+from utils.utils import log, get_logger
 
-base_url = ""
-popular = ""
-max_limit = ""
 
-def get_logger(name: str):
-    logger = logging.getLogger(f"{name}")
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter('process: p%(process)s | funcName: %(funcName)s | line: %(lineno)d | level: %(levelname)s | message:{%(message)s}')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
-    return logger
+base_url = "https://www.dcard.tw/service/api/v2"
+popular = "false"
+max = "10"
 
 logger = get_logger(name=__name__)
 
 class DcardExtractor(ExtractorBase):
-    def __init__(self, base_url, popular, max_limit):
+    def __init__(self):
         super().__init__()
-        self.base_url = base_url
-        self.popular = popular
-        self.max_limit = max_limit
 
-    @log(logger)
-    def extract(self):
-        print(f"This is a test!{aa}")
-        logger.debug(f"successfully execute!!")
-
-    def get_df_from_api(self, url):
-        response = requests.get(url).text
+    def get_df_from_api(self, url: str) -> pd.DataFrame:
+        """
+        """
+        # user_agent = UserAgent()
+        # headers = {"User-Agent": user_agent.random}
+        headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
+        response = requests.get(url, headers=headers).text
         data = json.loads(response)
         df = pd.DataFrame(data)
         return df
@@ -57,25 +47,6 @@ class DcardExtractor(ExtractorBase):
         url = self.base_url + '/posts'
         df = self.get_df_from_api(url)
         return df
-
-    def get_Dcard_posts(self, forums_name, before_postid=None):
-        '''
-        看板文章列表
-        '''
-        if before_postid == None:
-            url = self.base_url + '/forums/' + str(forums_name) + '/posts' + '?popular=' + self.popular + '&limit=' + str(self.max_limit)
-        else:
-            url = self.base_url + '/forums/' + str(forums_name) + '/posts' + '?popular=' + self.popular + '&limit=' + str(self.max_limit) + '&before=' + str(before_postid)
-        df = self.get_df_from_api(url)
-        return df
-
-    def get_Dcard_posts_context(self, postid):
-        '''
-        文章內容
-        '''
-        url = self.base_url + '/posts/' + str(postid)
-        df = self.get_df_from_api(url)
-        return df
     
     def get_Dcard_posts_links(self, postid):
         '''
@@ -84,17 +55,26 @@ class DcardExtractor(ExtractorBase):
         url = self.base_url + '/posts/' + str(postid) + '/links'
         df = self.get_df_from_api(url)
         return df
-
-    def get_Dcard_posts_comments(self, postid, after_floorid=None):
-        '''
-        文章留言
-        '''
-        if after_floorid == None:
-            url = self.base_url + '/posts/' + str(postid) + '/comments'
-        else:
-            url = self.base_url + '/posts/' + str(postid) + '/comments' + '?after=' + str(after_floorid)
-        df = self.get_df_from_api(url)
-        return df
     
-dc = DcardExtractor(base_url, popular, max_limit)
+    def get_post_mata(self, forums_name: str) -> dict:
+        """
+        """
+        url = f"{base_url}/forums/{forums_name}/posts?popular={popular}&limit={max}"
+        # if before_postid:
+        #     url += f"&before={before_postid}"
+        df = self.get_df_from_api(url = url)
+        return df
+
+    # @log(logger)
+    def extract(self):
+        """
+        main function to do data extraction
+        """
+        forums_name = "tech_job"
+        df = self.get_post_mata(forums_name)
+        # logger.info(f"{df.columns}")
+        print(df)
+
+
+dc = DcardExtractor()
 dc.extract()
