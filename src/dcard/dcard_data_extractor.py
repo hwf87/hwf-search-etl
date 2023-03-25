@@ -7,7 +7,22 @@ import logging
 import requests
 import pandas as pd
 from src.CrawlerBase import ExtractorBase
-from utils.utils import exception_handler
+from utils.utils import log
+
+base_url = ""
+popular = ""
+max_limit = ""
+
+def get_logger(name: str):
+    logger = logging.getLogger(f"{name}")
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('process: p%(process)s | funcName: %(funcName)s | line: %(lineno)d | level: %(levelname)s | message:{%(message)s}')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
+    return logger
+
+logger = get_logger(name=__name__)
 
 class DcardExtractor(ExtractorBase):
     def __init__(self, base_url, popular, max_limit):
@@ -16,9 +31,10 @@ class DcardExtractor(ExtractorBase):
         self.popular = popular
         self.max_limit = max_limit
 
-    @exception_handler
+    @log(logger)
     def extract(self):
-        print("This is a test!")
+        print(f"This is a test!{aa}")
+        logger.debug(f"successfully execute!!")
 
     def get_df_from_api(self, url):
         response = requests.get(url).text
@@ -80,5 +96,5 @@ class DcardExtractor(ExtractorBase):
         df = self.get_df_from_api(url)
         return df
     
-dc = DcardExtractor()
+dc = DcardExtractor(base_url, popular, max_limit)
 dc.extract()

@@ -1,7 +1,7 @@
 #-*- coding: UTF-8 -*-
 
 from abc import ABC, abstractmethod
-from utils.utils import exception_handler
+from utils.utils import log
 
 # Get data from sources
 class ExtractorBase(ABC):
@@ -34,27 +34,27 @@ class LoaderBase(ABC):
         """
         """
     
-    @exception_handler
-    def check_index():
-        """
-        """
-        pass
+    # @exception_handler
+    # def check_index():
+    #     """
+    #     """
+    #     pass
 
-    @exception_handler
-    def create_index():
-        """
-        """
-        pass
+    # @exception_handler
+    # def create_index():
+    #     """
+    #     """
+    #     pass
 
-    @exception_handler
-    def bulk_insert():
-        """
-        """
-        pass
+    # @exception_handler
+    # def bulk_insert():
+    #     """
+    #     """
+    #     pass
 
-    @exception_handler
-    def get_batch():
-        """
-        """
-        pass
+    # @exception_handler
+    # def get_batch():
+    #     """
+    #     """
+    #     pass
 
