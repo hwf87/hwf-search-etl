@@ -1,0 +1,41 @@
+{
+    "mappings" : {
+        "dynamic" : "true",
+        "properties" : {
+            "uid" : {
+                "type" : "long"
+            },
+            "author" : {
+                "type" : "keyword"
+            },
+            "embeddings" : {
+                "type" : "dense_vector",
+                "dims" : 384
+            },
+            "title" : {
+                "type" : "text"
+            },
+            "details" : {
+                "type" : "text"
+            },
+            "link" : {
+                "type" : "text"
+            },
+            "tags" : {
+                "type" : "keyword"
+            },
+            "views" : {
+                "type" : "long"
+            },
+            "posted":{
+                "type" : "text"
+            }
+        }
+    },
+    "settings" : {
+        "index" : {
+        "number_of_shards" : "2",
+        "number_of_replicas" : "1"
+        }
+    }
+}

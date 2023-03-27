@@ -74,8 +74,18 @@ class TedtalkExtractor(ExtractorBase):
         posted = talk.find(class_="meta__val").text.replace("\n", "")
         details, tags, views = self.parse_extra_info(talk_url = link)
         uid = link.split("/")[-1]
+        result = {
+            "uid": uid, 
+            "author": author, 
+            "title": title, 
+            "link": link, 
+            "posted": posted, 
+            "details": details, 
+            "tags": tags, 
+            "views": views
+        }
 
-        return uid, author, title, link, posted, details, tags, views
+        return result
     
     @log(logger)
     def get_all_talks_current_page(self, url: str) -> None:
@@ -85,7 +95,7 @@ class TedtalkExtractor(ExtractorBase):
         soup = self.bs4_parser(url)
         talks = soup.find_all("div", class_="media__message")
         for talk in tqdm(talks):
-            time.sleep(3)
+            # time.sleep(0.5)
             self.all_results += [self.parse_basic_info(talk)]
     
     @log(logger)
@@ -105,12 +115,13 @@ class TedtalkExtractor(ExtractorBase):
             tr.start()
         for tr in threads:
             tr.join()
+        chunk_results = self.chunks(self.all_results, 1)
 
-        return self.all_results
+        return chunk_results
 
 
-dc = TedtalkExtractor()
-res = dc.extract()
-logger.info(f"LENGTH: {len(res)}")
+# dc = TedtalkExtractor()
+# res = dc.extract()
+# logger.info(f"LENGTH: {len(res)}")
 
-pd.DataFrame(res).dropna().to_excel("test_01.xlsx", index = False)
+# pd.DataFrame(res).dropna().to_excel("test_01.xlsx", index = False)
