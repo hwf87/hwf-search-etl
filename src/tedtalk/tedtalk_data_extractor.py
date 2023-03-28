@@ -1,11 +1,8 @@
 #-*- coding: UTF-8 -*-
 
 import time
-import requests
 import threading
 from tqdm import tqdm
-from retry import retry
-from bs4 import BeautifulSoup
 import pandas as pd
 
 import sys
@@ -24,17 +21,6 @@ class TedtalkExtractor(ExtractorBase):
         self.all_results = []
     
     @log(logger)
-    def bs4_parser(self, url: str) -> BeautifulSoup:
-        """
-        use beautiful soup to parse html text
-        """
-        res = requests.get(url, headers=self.headers)
-        soup = BeautifulSoup(res.text, "html.parser")
-
-        return soup
-    
-    @log(logger)
-    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
     def get_page_num(self, url: str) -> int:
         """
         get page number of input tedtalk url
@@ -45,8 +31,6 @@ class TedtalkExtractor(ExtractorBase):
         
         return int(page_num)
     
-    # @log(logger)
-    # @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
     def parse_extra_info(self, talk_url: str) -> tuple:
         """
         RETURN: details, tags, views
@@ -62,7 +46,6 @@ class TedtalkExtractor(ExtractorBase):
         return details, tags, views
 
     @log(logger)
-    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
     def parse_basic_info(self, talk: object) -> tuple:
         """
         parse basic in for given talks raw meta

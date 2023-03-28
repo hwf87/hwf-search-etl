@@ -1,6 +1,7 @@
 #-*- coding: UTF-8 -*-
 
 import sys
+import json
 sys.path.append("../..")
 from elasticsearch import Elasticsearch
 from src.CrawlerBase import LoaderBase
@@ -14,9 +15,8 @@ class TedtalkLoader(LoaderBase):
     
     def load(self, data):
         
+        print(f"TYPE: {type(data)}")
+        print(f"MYDATA===== {data}")
         es = Elasticsearch("http://127.0.0.1:9200", verify_certs = False)
-        res = es.index(index = 'tedtalk', 
-                       doc_type = "_doc", 
-                       id = data["uid"], 
-                       body = data)
+        res = es.index(index = 'tedtalk', id = data["uid"], body = data)
         print(res)

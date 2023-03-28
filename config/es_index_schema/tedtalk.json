@@ -3,7 +3,7 @@
         "dynamic" : "true",
         "properties" : {
             "uid" : {
-                "type" : "long"
+                "type" : "text"
             },
             "author" : {
                 "type" : "keyword"
@@ -25,7 +25,7 @@
                 "type" : "keyword"
             },
             "views" : {
-                "type" : "long"
+                "type" : "text"
             },
             "posted":{
                 "type" : "text"

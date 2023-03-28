@@ -1,7 +1,6 @@
 #-*- coding: UTF-8 -*-
 
 import sys
-from retry import retry
 import pandas as pd
 sys.path.append("../..")
 from src.CrawlerBase import TransformerBase
@@ -20,12 +19,14 @@ class TedtalkTransformer(TransformerBase):
     def transform(self, input_json_list: list) -> list:
         """
         """
+        logger.info(f"input_json_list Length: {len(input_json_list)}")
+        logger.info(input_json_list)
         results = []
         for item in input_json_list:
             item["embeddings"] = self.inference(item["details"])
             results.append(item)
 
-        return results[0]
+        return results
     
     @log(logger)
     def inference(self, text: str) -> list:
@@ -33,6 +34,7 @@ class TedtalkTransformer(TransformerBase):
         """
         embeddings = self.model.encode(text)
         embeddings = embeddings.tolist()
+
         return embeddings
     
 

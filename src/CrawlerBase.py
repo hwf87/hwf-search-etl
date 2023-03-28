@@ -1,5 +1,8 @@
 #-*- coding: UTF-8 -*-
 
+import requests
+from retry import retry
+from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
 from utils.utils import get_logger, log
 
@@ -15,6 +18,17 @@ class ExtractorBase(ABC):
         """
         """
         pass
+
+    @log(logger)
+    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
+    def bs4_parser(self, url: str) -> BeautifulSoup:
+        """
+        use beautiful soup to parse html text
+        """
+        res = requests.get(url, headers=self.headers)
+        soup = BeautifulSoup(res.text, "html.parser")
+
+        return soup
 
     def chunks(self, lst, n):
         """Yield successive n-sized chunks from lst."""
