@@ -3,6 +3,8 @@
 import requests
 from retry import retry
 from bs4 import BeautifulSoup
+from elasticsearch import Elasticsearch, helpers
+from typing import Iterator
 from abc import ABC, abstractmethod
 from utils.utils import get_logger, log
 
@@ -20,7 +22,7 @@ class ExtractorBase(ABC):
         pass
 
     @log(logger)
-    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
+    @retry(tries=5, delay=3, backoff=2 ,max_delay=30)
     def bs4_parser(self, url: str) -> BeautifulSoup:
         """
         use beautiful soup to parse html text
@@ -30,7 +32,8 @@ class ExtractorBase(ABC):
 
         return soup
 
-    def chunks(self, lst, n):
+    @log(logger)
+    def chunks(self, lst, n) -> list:
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
@@ -41,9 +44,15 @@ class TransformerBase(ABC):
         super().__init__()
     
     @abstractmethod
-    def transform():
+    def transform(self):
         """
         """
+    
+    @log(logger)
+    def chunks(self, lst, n) -> list:
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
 
 # Sink data to Elasticsearch database
 class LoaderBase(ABC):
@@ -51,31 +60,55 @@ class LoaderBase(ABC):
         super().__init__()
     
     @abstractmethod
-    def load():
+    def load(self):
         """
         """
     
-    @log(logger)
-    def check_index():
+    @abstractmethod
+    def load_action_batch(self):
         """
         """
-        pass
 
     @log(logger)
-    def create_index():
+    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
+    def get_es_client(self, host: str) -> Elasticsearch:
         """
         """
-        pass
+        # host = "http://127.0.0.1:9200"
+        es = Elasticsearch(host, verify_certs = False)
+        return es
+    
+    @log(logger)
+    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
+    def check_index(self, index_name: str, es: Elasticsearch) -> bool:
+        """
+        """
+        res = es.indices.exists(index = index_name)
+        return res
 
     @log(logger)
-    def bulk_insert():
+    @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
+    def create_index(self, index_name: str, body: dict, es: Elasticsearch) -> None:
         """
         """
-        pass
+        res = es.indices.create(index = index_name, body = body)
+        status_code = res.meta.status
+        logger.info(f"Create index {index_name} => {status_code}")
 
     @log(logger)
-    def get_batch():
+    def bulk_insert(self, actions: Iterator, es: Elasticsearch) -> None:
         """
         """
-        pass
+        batches = []
+        for _, meta in helpers.streaming_bulk(
+            client = es,
+            actions = actions,
+            chunk_size = 100,
+            max_chunk_bytes = 104857600,
+            max_retries = 3,
+            yield_ok = True,
+            ignore_status=()
+        ):
+            batches.append(meta)
+        logger.info(f"Success Count: {len(batches)}")
 

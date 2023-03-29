@@ -13,7 +13,6 @@ class PreProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        print(element)
         TE = TedtalkExtractor()
         results = TE.extract()
         return results
@@ -25,7 +24,6 @@ class InferenceProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        print(element)
         TT = TedtalkTransformer()
         results = TT.transform(element)
         return results
@@ -37,7 +35,6 @@ class PostProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        print(element)
         TL = TedtalkLoader()
         TL.load(element)
         return print("success")

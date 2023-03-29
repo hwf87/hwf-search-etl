@@ -78,7 +78,7 @@ class TedtalkExtractor(ExtractorBase):
         soup = self.bs4_parser(url)
         talks = soup.find_all("div", class_="media__message")
         for talk in tqdm(talks):
-            # time.sleep(0.5)
+            time.sleep(2)
             self.all_results += [self.parse_basic_info(talk)]
     
     @log(logger)
@@ -90,7 +90,7 @@ class TedtalkExtractor(ExtractorBase):
         url = "https://www.ted.com/talks?language=en&sort=newest"
         pages = self.get_page_num(url = url)
         logger.info(f"PAGES: {pages}")
-        pages = 1
+        pages = 30
         threads = [
             threading.Thread(target=self.get_all_talks_current_page, args=(f"{url}&page={str(current_page)}",)) for current_page in range(1, pages+1)
         ]
@@ -98,7 +98,7 @@ class TedtalkExtractor(ExtractorBase):
             tr.start()
         for tr in threads:
             tr.join()
-        chunk_results = self.chunks(self.all_results, 1)
+        chunk_results = self.chunks(self.all_results, 500)
 
         return chunk_results
 
