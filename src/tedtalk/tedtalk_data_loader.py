@@ -12,10 +12,11 @@ class TedtalkLoader(LoaderBase):
     def __init__(self):
         super().__init__()
     
+    @log(logger)
     def load(self, documents: list) -> None:
         """
         """
-        index_name = "tedtalk"
+        index_name = "tedtalk_3"
         # host = "http://127.0.0.1:9200"
         es = self.get_es_client(host = elasticsearch_host)
         index_exist = self.check_index(index_name = index_name, es = es)

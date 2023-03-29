@@ -1,4 +1,5 @@
 import apache_beam as beam
+# from apache_beam.options.pipeline_options import PipelineOptions
 
 import sys
 sys.path.append("..")
@@ -8,11 +9,11 @@ pre_processor = PreProcessor()
 inference_processor = InferenceProcessor()
 post_processor = PostProcessor()
 
-# data = [[
-#     {"id": 1, "text":"apple is a fruit!!"},
-#     {"id": 2, "text":"sky is blue!!"},
-#     {"id": 3, "text":"pencil is not a fruit!!"}
-# ]]
+# options = PipelineOptions(
+#    direct_num_workers = 4,
+#    direct_running_mode = "multi_processing"
+# )
+
 
 def run():
    """
@@ -26,4 +27,14 @@ def run():
          | "Post-Process" >> beam.ParDo(post_processor)
       )
 
-run()
+if __name__ == '__main__':
+    # run()
+    print("===Start Pipeline===")
+    print("===Start Pre-Process===")
+    res = pre_processor.process(element = "")
+
+    print("===Start Inference Process===")
+    res1 = inference_processor.process(res)
+
+    print("===Start Sink Process===")
+    res2 = post_processor.process(res)

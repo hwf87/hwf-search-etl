@@ -24,9 +24,9 @@ class TedtalkTransformer(TransformerBase):
         for item in input_json_list:
             item["embeddings"] = self.inference(item["details"])
             results.append(item)
-        chunk_results = self.chunks(results, 500)
+        #chunk_results = self.chunks(results, 500)
 
-        return chunk_results
+        return results  #chunk_results
     
     @log(logger)
     def inference(self, text: str) -> list:
