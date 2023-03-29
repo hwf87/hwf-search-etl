@@ -52,18 +52,30 @@ class NewsExtractor(ExtractorBase):
         playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
         return playlist_id
     
-    def get_video_id_list(self, playlist_id: str) -> list:
+    def get_video_id_list(self, playlist_id: str, results_per_page: str, pages: int=None, nextPageToken: str=None) -> list:
         """
         """
-        max_results = "10"
+        idx = 0
         part = "contentDetails"
-        url = f'{base_uri}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={max_results}&key={api_key}'
-        result = requests.get(url).json()
+        video_id_list = []
+        while nextPageToken != "":
+            print(f"IDX: {idx}")
+            url = f'{base_uri}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={api_key}'
+            if nextPageToken != None:
+                url += f"&pageToken={nextPageToken}"
+            result = requests.get(url).json()
 
-        # print(f"TOTAL: {result['pageInfo']['totalResults']}")        
-        video_id_list = [item['contentDetails']['videoId'] for item in result["items"]]
+            totalResults = result['pageInfo']['totalResults']
+            nextPageToken = result.get("nextPageToken", "")
+            video_id_tmp = [item['contentDetails']['videoId'] for item in result["items"]]
+            video_id_list += video_id_tmp
+            idx += 1
+            if pages == None:
+                continue
+            if idx >= pages:
+                break
 
-        return video_id_list
+        return totalResults, nextPageToken, video_id_list
     
     def get_video_info(self, video_id: str) -> dict:
         """
@@ -101,8 +113,18 @@ NE = NewsExtractor()
 playlist_id = NE.get_playlist_id(channel_username = channel_username)
 print(f"MY_PLAYLIST_ID: {playlist_id}")
 
-video_id_list = NE.get_video_id_list(playlist_id = playlist_id)
-my_vid = video_id_list[0]
-print(f"MY_VID: {my_vid}")
+totalResults, nextPageToken, video_id_list = NE.get_video_id_list(playlist_id = playlist_id,
+                                                                  results_per_page = "50",
+                                                                  pages = 3,
+                                                                  nextPageToken = "EAAaB1BUOkNKWUI")
+my_vid = video_id_list
 
-NE.get_video_info(video_id = my_vid)
+print(f"MY_VID_COUNT: {len(my_vid)}")
+print(f"MY_VID: {my_vid}")
+print(f"NEXT: {nextPageToken}")
+
+print(f"LEN SET: {len(set(my_vid))}")
+
+# NE.get_video_info(video_id = my_vid)
+
+#TODO: Naming Conventions, Structure Code, Main Function
