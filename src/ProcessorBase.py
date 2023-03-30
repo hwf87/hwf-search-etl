@@ -5,6 +5,9 @@ import apache_beam as beam
 from src.tedtalk.tedtalk_data_transformer import TedtalkTransformer
 from src.tedtalk.tedtalk_data_extractor import TedtalkExtractor
 from src.tedtalk.tedtalk_data_loader import TedtalkLoader
+from src.news.news_data_extractor import NewsExtractor
+from src.news.news_data_trannsformer import NewsTransformer
+from src.news.news_data_loader import NewsLoader
 
 class PreProcessor(beam.DoFn):
     def __init__(self):
@@ -13,8 +16,8 @@ class PreProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        TE = TedtalkExtractor()
-        results = TE.extract()
+        PRP = NewsExtractor()
+        results = PRP.extract()
         return results
 
 class InferenceProcessor(beam.DoFn):
@@ -24,8 +27,8 @@ class InferenceProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        TT = TedtalkTransformer()
-        results = TT.transform(element)
+        IP = NewsTransformer()
+        results = IP.transform(element)
         return results
     
 class PostProcessor(beam.DoFn):
@@ -35,6 +38,6 @@ class PostProcessor(beam.DoFn):
     def process(self, element):
         """
         """
-        TL = TedtalkLoader()
-        TL.load(element)
+        POP = NewsLoader()
+        POP.load(element)
         return print("success")

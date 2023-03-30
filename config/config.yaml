@@ -4,3 +4,7 @@ elasticsearch:
   username: ""
   password: ""
   op_type: "index"
+
+youtube:
+  api_base_url: "https://www.googleapis.com/youtube/v3"
+  api_key: "AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"

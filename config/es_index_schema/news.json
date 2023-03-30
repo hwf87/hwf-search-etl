@@ -5,7 +5,7 @@
             "uid" : {
                 "type" : "text"
             },
-            "author" : {
+            "channel" : {
                 "type" : "keyword"
             },
             "embeddings" : {
@@ -27,7 +27,13 @@
             "views" : {
                 "type" : "text"
             },
+            "likes" : {
+                "type" : "text"
+            },
             "posted":{
+                "type" : "text"
+            },
+            "comment_count":{
                 "type" : "text"
             }
         }

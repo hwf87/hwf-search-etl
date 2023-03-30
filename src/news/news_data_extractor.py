@@ -5,53 +5,25 @@ import requests
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
+from utils.config_parser import youtube_api_base_url, youtube_api_key
 
 logger = get_logger(name=__name__)
-
-api_key = "AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"
-channel_id = "UCupvZG-5ko_eiXAupbDfxWw"
-channel_username = "CNN"
-base_uri = "https://www.googleapis.com/youtube/v3"
-
-"https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=CNN&key=AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"
-
-'''
-{
-  "kind": "youtube#channelListResponse",
-  "etag": "IbXPspjj5fQ4E6OF2FGfdSAqO6Q",
-  "pageInfo": {
-    "totalResults": 1,
-    "resultsPerPage": 5
-  },
-  "items": [
-    {
-      "kind": "youtube#channel",
-      "etag": "G8xQgHvyOJZrWSekOjayPj-5Cbc",
-      "id": "UCupvZG-5ko_eiXAupbDfxWw",
-      "contentDetails": {
-        "relatedPlaylists": {
-          "likes": "",
-          "uploads": "UUupvZG-5ko_eiXAupbDfxWw"
-        }
-      }
-    }
-  ]
-}
-'''
 
 class NewsExtractor(ExtractorBase):
     def __init__(self):
         super().__init__()
     
+    @log(logger)
     def get_playlist_id(self, channel_username: str) -> str:
         """
         """
         part = "contentDetails"
-        url = f"{base_uri}/channels?part={part}&forUsername={channel_username}&key={api_key}"
+        url = f"{youtube_api_base_url}/channels?part={part}&forUsername={channel_username}&key={youtube_api_key}"
         result = requests.get(url).json()
         playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
         return playlist_id
     
+    @log(logger)
     def get_video_id_list(self, playlist_id: str, results_per_page: str, pages: int=None, nextPageToken: str=None) -> list:
         """
         """
@@ -60,7 +32,7 @@ class NewsExtractor(ExtractorBase):
         video_id_list = []
         while nextPageToken != "":
             print(f"IDX: {idx}")
-            url = f'{base_uri}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={api_key}'
+            url = f'{youtube_api_base_url}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={youtube_api_key}'
             if nextPageToken != None:
                 url += f"&pageToken={nextPageToken}"
             result = requests.get(url).json()
@@ -77,54 +49,92 @@ class NewsExtractor(ExtractorBase):
 
         return totalResults, nextPageToken, video_id_list
     
-    def get_video_info(self, video_id: str) -> dict:
+    @log(logger)
+    def parse_video_metadata(self, metadata: dict) -> dict:
         """
         """
-        part = "snippet,statistics"
-        url = f'{base_uri}/videos?part={part}&id={video_id}&key={api_key}'
-        result = requests.get(url).json()
-        data_item = result["items"][0]
-        url_ = f"https://www.youtube.com/watch?v={data_item['id']}"
+        url_ = f"https://www.youtube.com/watch?v={metadata['id']}"
         info = {
-            'id': data_item['id'],
-            'channelTitle': data_item['snippet']['channelTitle'],
-            'tags': data_item['snippet']['tags'],
-            'publishedAt': data_item['snippet']['publishedAt'],
-            'video_url': url_,
-            'title': data_item['snippet']['title'],
-            'description': data_item['snippet']['description'],
-            'likeCount': data_item['statistics']['likeCount'],
-            'commentCount': data_item['statistics']['commentCount'],
-            'viewCount': data_item['statistics']['viewCount']
+            'uid': metadata['id'],
+            'channel': metadata['snippet'].get('channelTitle', ""),
+            'tags': metadata['snippet'].get('tags', []),
+            'posted': metadata['snippet'].get('publishedAt', ""),
+            'link': url_,
+            'title': metadata['snippet'].get('title', ""),
+            'details': metadata['snippet'].get('description', ""),
+            'likes': metadata['statistics'].get('likeCount', ""),
+            'comment_count': metadata['statistics'].get('commentCount', ""),
+            'views': metadata['statistics'].get('viewCount', "")
         }
-        print(info)
-
         return info
+    
+    @log(logger)
+    def get_video_info(self, video_id_list: list) -> dict:
+        """
+        video_id_list length <= 50
+        """
+        video_ids = ",".join(video_id_list)
+        part = "snippet,statistics"
+        url = f'{youtube_api_base_url}/videos?part={part}&id={video_ids}&key={youtube_api_key}'
+        result = requests.get(url).json()
+
+        meta_list = result["items"]
+        infos = [self.parse_video_metadata(metadata) for metadata in meta_list]
+
+        return infos
 
     @log(logger)
-    def extract(self) -> list:
+    def extract(self, channel_username: str="CNN") -> list:
         """
         main logic
         """
-        # get total pages
-        print("Hello")
+        # channel_id = "UCupvZG-5ko_eiXAupbDfxWw"
+        # channel_username = "CNN"
 
-NE = NewsExtractor()
-playlist_id = NE.get_playlist_id(channel_username = channel_username)
-print(f"MY_PLAYLIST_ID: {playlist_id}")
+        # get play list id from channel
+        playlist_id = self.get_playlist_id(channel_username = channel_username)
 
-totalResults, nextPageToken, video_id_list = NE.get_video_id_list(playlist_id = playlist_id,
+        # get video id list
+        totalResults, nextPageToken, video_id_list = self.get_video_id_list(playlist_id = playlist_id,
                                                                   results_per_page = "50",
-                                                                  pages = 3,
-                                                                  nextPageToken = "EAAaB1BUOkNKWUI")
-my_vid = video_id_list
+                                                                  pages = 3)
+        logger.info(f"totalResults: {totalResults}, nextPageToken: {nextPageToken}")
+        
+        # get videos info
+        video_id_list = self.chunks(video_id_list, 50)
+        results = []
+        for vid_chunk in video_id_list:
+            chunck_result = self.get_video_info(video_id_list = vid_chunk)
+            results += chunck_result
 
-print(f"MY_VID_COUNT: {len(my_vid)}")
-print(f"MY_VID: {my_vid}")
-print(f"NEXT: {nextPageToken}")
+        return results
+        
 
-print(f"LEN SET: {len(set(my_vid))}")
+# NE = NewsExtractor()
+# NE.extract(channel_username = "CNN")
 
-# NE.get_video_info(video_id = my_vid)
+# channel_username = "CNN"
 
-#TODO: Naming Conventions, Structure Code, Main Function
+# NE = NewsExtractor()
+# playlist_id = NE.get_playlist_id(channel_username = channel_username)
+# print(f"MY_PLAYLIST_ID: {playlist_id}")
+
+# totalResults, nextPageToken, video_id_list = NE.get_video_id_list(playlist_id = playlist_id,
+#                                                                   results_per_page = "50",
+#                                                                   pages = 2,
+#                                                                   nextPageToken = "EAAaB1BUOkNKWUI")
+# my_vid = video_id_list
+
+# print(f"MY_VID_COUNT: {len(my_vid)}")
+# print(f"MY_VID: {my_vid}")
+# print(f"NEXT: {nextPageToken}")
+
+# print(f"LEN SET: {len(set(my_vid))}")
+
+# infos = NE.get_video_info(video_id_list = my_vid)
+
+# print(infos)
+
+# print(len(infos))
+
+# #TODO: Naming Conventions, Structure Code, Main Function
