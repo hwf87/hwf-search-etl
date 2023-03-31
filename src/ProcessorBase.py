@@ -6,7 +6,7 @@ from src.tedtalk.tedtalk_data_transformer import TedtalkTransformer
 from src.tedtalk.tedtalk_data_extractor import TedtalkExtractor
 from src.tedtalk.tedtalk_data_loader import TedtalkLoader
 from src.news.news_data_extractor import NewsExtractor
-from src.news.news_data_trannsformer import NewsTransformer
+from src.news.news_data_transformer import NewsTransformer
 from src.news.news_data_loader import NewsLoader
 
 class PreProcessor(beam.DoFn):
