@@ -27,11 +27,11 @@ class NewsExtractor(ExtractorBase):
     def get_video_id_list(self, playlist_id: str, results_per_page: str, pages: int=None, nextPageToken: str=None) -> list:
         """
         """
-        idx = 0
+        idx = 1
         part = "contentDetails"
         video_id_list = []
         while nextPageToken != "":
-            print(f"IDX: {idx}")
+            logger.info(f"YouTube Page No.: {idx}")
             url = f'{youtube_api_base_url}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={youtube_api_key}'
             if nextPageToken != None:
                 url += f"&pageToken={nextPageToken}"
@@ -44,7 +44,7 @@ class NewsExtractor(ExtractorBase):
             idx += 1
             if pages == None:
                 continue
-            if idx >= pages:
+            if idx > pages:
                 break
 
         return totalResults, nextPageToken, video_id_list
@@ -96,14 +96,15 @@ class NewsExtractor(ExtractorBase):
 
         # get video id list
         totalResults, nextPageToken, video_id_list = self.get_video_id_list(playlist_id = playlist_id,
-                                                                  results_per_page = "50",
-                                                                  pages = 3)
+                                                                  results_per_page = "50")
+                                                                #   pages = 30)
         logger.info(f"totalResults: {totalResults}, nextPageToken: {nextPageToken}")
         
         # get videos info
         video_id_list = self.chunks(video_id_list, 50)
         results = []
-        for vid_chunk in video_id_list:
+        for idx, vid_chunk in enumerate(video_id_list):
+            logger.info(f"Video Chunk No.: {idx}")
             chunck_result = self.get_video_info(video_id_list = vid_chunk)
             results += chunck_result
 
