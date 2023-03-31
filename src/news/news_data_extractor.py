@@ -96,8 +96,8 @@ class NewsExtractor(ExtractorBase):
 
         # get video id list
         totalResults, nextPageToken, video_id_list = self.get_video_id_list(playlist_id = playlist_id,
-                                                                  results_per_page = "50")
-                                                                #   pages = 30)
+                                                                  results_per_page = "50",
+                                                                  pages = 3)
         logger.info(f"totalResults: {totalResults}, nextPageToken: {nextPageToken}")
         
         # get videos info
@@ -107,7 +107,7 @@ class NewsExtractor(ExtractorBase):
             logger.info(f"Video Chunk No.: {idx}")
             chunck_result = self.get_video_info(video_id_list = vid_chunk)
             results += chunck_result
-
+        
         return results
         
 

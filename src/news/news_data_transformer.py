@@ -38,7 +38,6 @@ class NewsTransformer(TransformerBase):
         #     item["embeddings"] = self.inference(item["details"])
         #     results.append(item)
         #chunk_results = self.chunks(results, 500)
-
         return results  #chunk_results
     
     @log(logger)

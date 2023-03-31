@@ -15,24 +15,3 @@ load:
     news: NewsLoader
   src.tedtalk.tedtalk_data_loader:
     tedtalk: TedtalkLoader
-
-
-
-# extract:
-#   src.news.news_data_extractor:
-#     news-data: NewsExtractor
-#   src.tedtalk.tedtalk_data_extractor:
-#     tedtalk-data: TedtalkExtractor
-
-# transform:
-#   src.news.news_data_transformer:
-#     news-data: NewsTransformer
-#   src.tedtalk.tedtalk_data_transformer:
-#     tedtalk-data: TedtalkTransformer
-
-# load:
-#   src.news.news_data_loader:
-#     news-data: NewsLoader
-#   src.tedtalk.tedtalk_data_loader:
-#     tedtalk-data: TedtalkLoader
-

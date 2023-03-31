@@ -1,9 +1,11 @@
-
 elasticsearch:
   host: "http://127.0.0.1:9200"
   username: ""
   password: ""
   op_type: "index"
+  index_name:
+    news: cnn
+    tedtalk: tedtalk
 
 youtube:
   api_base_url: "https://www.googleapis.com/youtube/v3"
