@@ -1,9 +1,9 @@
 #-*- coding: UTF-8 -*-
 
 import sys
-sys.path.append("../..")
 import json
 import pandas as pd
+sys.path.append("../..")
 from src.CrawlerBase import TransformerBase
 from utils.utils import get_logger, log
 from sentence_transformers import SentenceTransformer

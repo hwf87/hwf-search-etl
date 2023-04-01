@@ -4,7 +4,7 @@ import sys
 sys.path.append("../..")
 from src.CrawlerBase import LoaderBase
 from utils.utils import get_logger, log
-from utils.config_parser import elasticsearch_host, tedtalk_schema
+from utils.config_parser import elasticsearch_host, elasticsearch_index_name_tedtalk, tedtalk_schema
 
 logger = get_logger(name=__name__)
 
@@ -16,17 +16,17 @@ class TedtalkLoader(LoaderBase):
     def load(self, documents: list) -> None:
         """
         """
-        index_name = "tedtalk_3"
+        # index_name = "tedtalk_3"
         # host = "http://127.0.0.1:9200"
         es = self.get_es_client(host = elasticsearch_host)
-        index_exist = self.check_index(index_name = index_name, es = es)
+        index_exist = self.check_index(index_name = elasticsearch_index_name_tedtalk, es = es)
         if not index_exist:
-            self.create_index(index_name = index_name, body = tedtalk_schema, es = es)
+            self.create_index(index_name = elasticsearch_index_name_tedtalk, body = tedtalk_schema, es = es)
         
         if index_exist != None:
             self.bulk_insert(actions = self.load_action_batch(
                                     op_type = "index",
-                                    index_name = index_name,
+                                    index_name = elasticsearch_index_name_tedtalk,
                                     documents = documents
                                 ),
                              es = es)

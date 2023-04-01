@@ -80,7 +80,7 @@ class TedtalkExtractor(ExtractorBase):
         soup = self.bs4_parser(url)
         talks = soup.find_all("div", class_="media__message")
         for talk in tqdm(talks):
-            time.sleep(3)
+            time.sleep(0.5)
             self.all_results += [self.parse_basic_info(talk)]
     
     @log(logger)
@@ -100,9 +100,8 @@ class TedtalkExtractor(ExtractorBase):
             tr.start()
         for tr in threads:
             tr.join()
-        # chunk_results = self.chunks(self.all_results, 500)
 
-        return self.all_results #chunk_results
+        return self.all_results
 
 
 # dc = TedtalkExtractor()

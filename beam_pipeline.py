@@ -14,7 +14,7 @@ def run():
    with beam.Pipeline() as pipeline:
       (
          pipeline
-         | "Trigger" >> beam.Create(["news"])
+         | "Trigger" >> beam.Create(["news", "tedtalk"])
          | "Pre-Process" >> beam.ParDo(pre_processor)
          | "Inference" >> beam.ParDo(inference_processor)
          | "Post-Process" >> beam.ParDo(post_processor)

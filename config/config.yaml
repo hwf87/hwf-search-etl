@@ -4,8 +4,8 @@ elasticsearch:
   password: ""
   op_type: "index"
   index_name:
-    news: cnn
-    tedtalk: tedtalk
+    news: cnn_t1
+    tedtalk: tedtalk_t1
 
 youtube:
   api_base_url: "https://www.googleapis.com/youtube/v3"
