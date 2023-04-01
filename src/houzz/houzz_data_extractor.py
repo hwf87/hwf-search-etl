@@ -20,6 +20,7 @@ class HouzzExtractor(ExtractorBase):
     def __init__(self):
         super().__init__()
         self.story_list = []
+        self.story_detail_list = []
         self.jobs = Queue()
     
     @log(logger)
@@ -33,13 +34,21 @@ class HouzzExtractor(ExtractorBase):
         page_url_list = self.get_page_url_list(story_count = story_count)
         page_url_list = page_url_list[:30]
         # start multi-thread to prase story meta from each single collect page
-        self.multi_thread_process(all_url_list = page_url_list, thread_num = 10)
+        self.multi_thread_process(all_url_list = page_url_list, process_func = self.get_stories_from_page, thread_num = 10)
 
         #TODO: parse story detail from each single story page 
-        
+        df = pd.DataFrame(self.story_list).dropna()
+        story_url_list = df["link"].tolist()[:100]
+        story_url_list = [url.replace(" ", "") for url in story_url_list]
+        self.multi_thread_process(all_url_list = story_url_list, process_func = self.get_detail_form_story_page, thread_num = 10)
+
+        print(f"story_detail_list length: {len(self.story_detail_list)}")
+
         # save to file
-        df = pd.DataFrame(self.story_list)
-        df.to_excel("houzz_sample3.xlsx", index = False)
+        df = pd.DataFrame(self.story_detail_list)
+        df.to_excel("houzz_sample_5.xlsx", index = False)
+
+        #TODO: move parsing funcs from get_page to get_story_detail
 
     def get_story_count(self, url: str) -> int:
         """
@@ -66,7 +75,7 @@ class HouzzExtractor(ExtractorBase):
 
         return page_url_list
     
-    def multi_thread_process(self, all_url_list: list, thread_num: int = 10) -> dict:
+    def multi_thread_process(self, all_url_list: list, process_func: Callable, thread_num: int = 10) -> dict:
         """
         """
         for page_url in all_url_list:
@@ -74,7 +83,7 @@ class HouzzExtractor(ExtractorBase):
         
         for thread_idx in range(0, thread_num):
             logger.info(f"Start Thraed NO.: {thread_idx+1}")
-            worker = threading.Thread(target=self.consume_jobs, args=(self.jobs, self.get_stories_from_page))
+            worker = threading.Thread(target=self.consume_jobs, args=(self.jobs, process_func,))
             worker.start()
         
         self.jobs.join()
@@ -166,25 +175,76 @@ class HouzzExtractor(ExtractorBase):
             for story in stories
         ]
         self.story_list += story_list_tmp
-        
-    def get_detail_form_story_page(self, story_url: str):
-        """
-        """
-        url = "https://www.houzz.com/magazine/yard-of-the-week-2-new-cabanas-anchor-an-entertainment-space-stsetivw-vs~166190586"
-        soup = self.bs4_parser(url = url)
-        posted = soup.find("span", class_="hz-editorial-gallery-author-info__featured").text
-        print(f"posted: {posted}")
 
-        tags = soup.find_all("a", class_="hz-editorial-gallery-header-topics__topic__link hz-color-link hz-color-link--green hz-color-link--enabled")
-        tags = [tag.text for tag in tags]
-        print(f"tags: {tags}")
+    def get_story_meta_posted(self, story: BeautifulSoup) -> str:
+        """
+        """
+        try:
+            posted = story.find("span", class_="hz-editorial-gallery-author-info__featured").text
+        except Exception as e:
+            logger.warning(e)
+            posted = ""
+        return posted
+    
+    def get_story_meta_tags(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            tags = story.find_all("a", class_="hz-editorial-gallery-header-topics__topic__link hz-color-link hz-color-link--green hz-color-link--enabled")
+            tags = [tag.text for tag in tags]
+        except Exception as e:
+            logger.warning(e)
+            tags = ""
+        return tags
+    
+    def get_story_meta_related_tags(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            related_tags = story.find_all("div", class_="hz-editorial-gallery-related-categories__item__name")
+            related_tags = [r_tag.text for r_tag in related_tags]
+        except Exception as e:
+            logger.warning(e)
+            related_tags = ""
+        return related_tags
+    
+    def get_story_meta_main_content(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            main_content = story.find("div", class_="hz-editorial-gallery-main-content").text
+        except Exception as e:
+            logger.warning(e)
+            main_content = ""
+        return main_content
+
+    def get_detail_form_story_page(self, url: str):
+        """
+        """
+        # url = "https://www.houzz.com/magazine/yard-of-the-week-2-new-cabanas-anchor-an-entertainment-space-stsetivw-vs~166190586"
+        logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
+        soup = self.bs4_parser(url = url)
+        story_detail = {
+            "main_content": self.get_story_meta_main_content(story = soup),
+            "tags": self.get_story_meta_tags(story = soup),
+            "related_tags": self.get_story_meta_related_tags(story = soup),
+            "posted": self.get_story_meta_posted(story = soup)
+        }
+        self.story_detail_list.append(story_detail)
+
+        # posted = soup.find("span", class_="hz-editorial-gallery-author-info__featured").text
+        # print(f"posted: {posted}")
+
+        # tags = soup.find_all("a", class_="hz-editorial-gallery-header-topics__topic__link hz-color-link hz-color-link--green hz-color-link--enabled")
+        # tags = [tag.text for tag in tags]
+        # print(f"tags: {tags}")
         
         # main_content = soup.find("div", class_="hz-editorial-gallery-main-content").text
         # print(f"main_content: {main_content}")
 
-        related_tags = soup.find_all("div", class_="hz-editorial-gallery-related-categories__item__name")
-        related_tags = [r_tag.text for r_tag in related_tags]
-        print(f"related_tags: {related_tags}")
+        # related_tags = soup.find_all("div", class_="hz-editorial-gallery-related-categories__item__name")
+        # related_tags = [r_tag.text for r_tag in related_tags]
+        # print(f"related_tags: {related_tags}")
         
 
         
