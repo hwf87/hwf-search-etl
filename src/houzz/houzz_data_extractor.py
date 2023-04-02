@@ -35,7 +35,7 @@ class HouzzExtractor(ExtractorBase):
 
         # start multi-thread to parse story detail from each single story page 
         story_url_list = [url for url in set(self.story_list) if "https://" in url]
-        self.multi_thread_process(all_url_list = story_url_list, process_func = self.get_detail_form_story_page, thread_num = 100)
+        self.multi_thread_process(all_url_list = story_url_list, process_func = self.get_detail_form_story_page, thread_num = 10)
         
         return self.story_detail_list
 
