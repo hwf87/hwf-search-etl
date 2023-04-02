@@ -26,14 +26,16 @@ class HouzzExtractor(ExtractorBase):
 
         # list done all url pages
         page_url_list = self.get_page_url_list(story_count = story_count, start_page = start_page)
-        page_url_list = page_url_list[:30]
+        
+        ## for testing only => limit to 30 pages
+        # page_url_list = page_url_list[:30]
         
         # start multi-thread to prase story url from each single collect page
         self.multi_thread_process(all_url_list = page_url_list, process_func = self.get_stories_from_page, thread_num = 10)
 
         # start multi-thread to parse story detail from each single story page 
         story_url_list = [url for url in set(self.story_list) if "https://" in url]
-        self.multi_thread_process(all_url_list = story_url_list, process_func = self.get_detail_form_story_page, thread_num = 10)
+        self.multi_thread_process(all_url_list = story_url_list, process_func = self.get_detail_form_story_page, thread_num = 100)
         
         return self.story_detail_list
 

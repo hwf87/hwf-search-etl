@@ -91,7 +91,7 @@ class TedtalkExtractor(ExtractorBase):
         # create page url list
         page_url_list = [f"{url}&page={str(current_page)}" for current_page in range(1, pages+1)]
         # multi thread process to parse tedtalk metadata
-        thread_number = int(pages)
+        thread_number = len(page_url_list)
         self.multi_thread_process(all_url_list = page_url_list, process_func = self.get_all_talks_current_page, thread_num = thread_number)
 
         return self.all_results
