@@ -33,12 +33,8 @@ class NewsTransformer(TransformerBase):
             results_chunk = df_chunk.to_json(orient="records")
             results_chunk = json.loads(results_chunk)
             results += results_chunk
-        
-        # for item in input_json_list:
-        #     item["embeddings"] = self.inference(item["details"])
-        #     results.append(item)
-        #chunk_results = self.chunks(results, 500)
-        return results  #chunk_results
+
+        return results
     
     @log(logger)
     def inference(self, batch_texts: list) -> list:

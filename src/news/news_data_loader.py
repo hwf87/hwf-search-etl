@@ -16,8 +16,6 @@ class NewsLoader(LoaderBase):
     def load(self, documents: list) -> None:
         """
         """
-        # index_name = "cnn"
-        # host = "http://127.0.0.1:9200"
         es = self.get_es_client(host = elasticsearch_host)
         index_exist = self.check_index(index_name = elasticsearch_index_name_news, es = es)
         if not index_exist:
@@ -44,8 +42,3 @@ class NewsLoader(LoaderBase):
                 "_source": document
             }
             yield actions
-
-
-        # es = Elasticsearch("http://127.0.0.1:9200", verify_certs = False)
-        # res = es.index(index = 'tedtalk', id = data["uid"], body = data)
-        # print(res)

@@ -1,24 +1,19 @@
 #-*- coding: UTF-8 -*-
 
-import time
-import threading
-from tqdm import tqdm
-import pandas as pd
-from retry import retry
-
 import sys
+import time
+from tqdm import tqdm
+from retry import retry
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
+from utils.config_parser import tedtalk_base_url
 
 logger = get_logger(name=__name__)
 
 class TedtalkExtractor(ExtractorBase):
     def __init__(self):
         super().__init__()
-        self.headers = {
-            'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36'
-        }
         self.all_results = []
     
     @log(logger)
@@ -54,8 +49,8 @@ class TedtalkExtractor(ExtractorBase):
         """
         author = talk.find(class_="h12 talk-link__speaker").text.replace("\n", "")
         title = talk.find(class_="ga-link").text.replace("\n", "")
-        base_url = "https://www.ted.com"
-        link = base_url + talk.find("a", class_="ga-link")['href']
+        # base_url = "https://www.ted.com"
+        link = tedtalk_base_url + talk.find("a", class_="ga-link")['href']
         posted = talk.find(class_="meta__val").text.replace("\n", "")
         details, tags, views = self.parse_extra_info(talk_url = link)
         uid = link.split("/")[-1]
@@ -77,10 +72,11 @@ class TedtalkExtractor(ExtractorBase):
         """
         get basic info of each talks in current page
         """
+        logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
         soup = self.bs4_parser(url)
         talks = soup.find_all("div", class_="media__message")
         for talk in tqdm(talks):
-            time.sleep(0.5)
+            time.sleep(3)
             self.all_results += [self.parse_basic_info(talk)]
     
     @log(logger)
@@ -89,23 +85,13 @@ class TedtalkExtractor(ExtractorBase):
         main logic
         """
         # get total pages
-        url = "https://www.ted.com/talks?language=en&sort=newest"
+        url = tedtalk_base_url + "/talks?language=en&sort=newest"
         pages = self.get_page_num(url = url)
         logger.info(f"PAGES: {pages}")
-        pages = 2
-        threads = [
-            threading.Thread(target=self.get_all_talks_current_page, args=(f"{url}&page={str(current_page)}",)) for current_page in range(1, pages+1)
-        ]
-        for tr in threads:
-            tr.start()
-        for tr in threads:
-            tr.join()
+        # create page url list
+        page_url_list = [f"{url}&page={str(current_page)}" for current_page in range(1, pages+1)]
+        # multi thread process to parse tedtalk metadata
+        thread_number = int(pages)
+        self.multi_thread_process(all_url_list = page_url_list, process_func = self.get_all_talks_current_page, thread_num = thread_number)
 
         return self.all_results
-
-
-# dc = TedtalkExtractor()
-# res = dc.extract()
-# logger.info(f"LENGTH: {len(res)}")
-
-# pd.DataFrame(res).dropna().to_excel("test_01.xlsx", index = False)

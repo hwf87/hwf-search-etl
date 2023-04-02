@@ -48,9 +48,3 @@ class InitObject():
         class_object_dict = self._load_class(class_config_dict = class_config_dict)
         instance_calss_dict = self._instance_class(class_object_dict = class_object_dict)
         return instance_calss_dict
-
-# if __name__ == "__main__":
-#     class_object = InitObject(class_config_path = "./config/class_object.yaml")
-    # print(class_object.extract)
-    # print(class_object.transform)
-    # print(class_object.load)

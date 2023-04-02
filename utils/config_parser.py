@@ -19,34 +19,34 @@ class FieldName:
         self.related_tags = "related_tags"
         self.comment_count = "comment_count"
 
-if __name__ == "__main__":
-    # Common Field Naming 
-    fn = FieldName()
+# Common Field Naming 
+fn = FieldName()
 
-    # Common Config
-    with open("./config/config.yaml", "r") as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-        elasticsearch_host = config["elasticsearch"]["host"]
-        elasticsearch_index_name_news = config["elasticsearch"]["index_name"]["news"]
-        elasticsearch_index_name_tedtalk = config["elasticsearch"]["index_name"]["tedtalk"]
-        elasticsearch_index_name_houzz = config["elasticsearch"]["index_name"]["houzz"]
-        youtube_api_base_url = config["youtube"]["api_base_url"]
-        youtube_api_key = config["youtube"]["api_key"]
-        houzz_story_base_url = config["houzz"]["story_base_url"]
-        f.close()
+# Common Config
+with open("./config/config.yaml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+    elasticsearch_host = config["elasticsearch"]["host"]
+    elasticsearch_index_name_news = config["elasticsearch"]["index_name"]["news"]
+    elasticsearch_index_name_tedtalk = config["elasticsearch"]["index_name"]["tedtalk"]
+    elasticsearch_index_name_houzz = config["elasticsearch"]["index_name"]["houzz"]
+    tedtalk_base_url = config["tedtalk"]["base_url"]
+    youtube_api_base_url = config["youtube"]["api_base_url"]
+    youtube_api_key = config["youtube"]["api_key"]
+    houzz_story_base_url = config["houzz"]["story_base_url"]
+    f.close()
 
-    # Elasticsearch Index Schema
-    with open("./config/es_index_schema/tedtalk.json", "r") as f:
-        tedtalk_schema = json.load(f)
-        f.close()
-    with open("./config/es_index_schema/news.json", "r") as f:
-        news_schema = json.load(f)
-        f.close()
-    with open("./config/es_index_schema/houzz.json", "r") as f:
-        houzz_schema = json.load(f)
-        f.close()
-        
-        
-        
-        
+# Elasticsearch Index Schema
+with open("./config/es_index_schema/tedtalk.json", "r") as f:
+    tedtalk_schema = json.load(f)
+    f.close()
+with open("./config/es_index_schema/news.json", "r") as f:
+    news_schema = json.load(f)
+    f.close()
+with open("./config/es_index_schema/houzz.json", "r") as f:
+    houzz_schema = json.load(f)
+    f.close()
+    
+    
+    
+    
 

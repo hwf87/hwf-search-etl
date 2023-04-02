@@ -51,4 +51,4 @@ class PostProcessor(beam.DoFn):
         source, data = element["source"], element["data"]
         POP = class_objects.load[source]
         POP.load(data)
-        return print("success")
+        logger.info(f"ETL JOB: [{source}] SUCCESS!!")

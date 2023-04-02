@@ -87,10 +87,8 @@ class NewsExtractor(ExtractorBase):
     def extract(self, channel_username: str="CNN") -> list:
         """
         main logic
+        ChannelID: "UCupvZG-5ko_eiXAupbDfxWw"
         """
-        # channel_id = "UCupvZG-5ko_eiXAupbDfxWw"
-        # channel_username = "CNN"
-
         # get play list id from channel
         playlist_id = self.get_playlist_id(channel_username = channel_username)
 
@@ -109,33 +107,3 @@ class NewsExtractor(ExtractorBase):
             results += chunck_result
         
         return results
-        
-
-# NE = NewsExtractor()
-# NE.extract(channel_username = "CNN")
-
-# channel_username = "CNN"
-
-# NE = NewsExtractor()
-# playlist_id = NE.get_playlist_id(channel_username = channel_username)
-# print(f"MY_PLAYLIST_ID: {playlist_id}")
-
-# totalResults, nextPageToken, video_id_list = NE.get_video_id_list(playlist_id = playlist_id,
-#                                                                   results_per_page = "50",
-#                                                                   pages = 2,
-#                                                                   nextPageToken = "EAAaB1BUOkNKWUI")
-# my_vid = video_id_list
-
-# print(f"MY_VID_COUNT: {len(my_vid)}")
-# print(f"MY_VID: {my_vid}")
-# print(f"NEXT: {nextPageToken}")
-
-# print(f"LEN SET: {len(set(my_vid))}")
-
-# infos = NE.get_video_info(video_id_list = my_vid)
-
-# print(infos)
-
-# print(len(infos))
-
-# #TODO: Naming Conventions, Structure Code, Main Function

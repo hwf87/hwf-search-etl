@@ -66,7 +66,7 @@ class ExtractorBase(ABC):
             func(url = url)
             job_queue.task_done()
 
-# NER model for data Inference
+# NER/Sentence model for data Inference
 class TransformerBase(ABC):
     def __init__(self) -> None:
         super().__init__()
@@ -82,7 +82,7 @@ class TransformerBase(ABC):
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
 
-# Sink data to Elasticsearch database
+# Load data to Elasticsearch database
 class LoaderBase(ABC):
     def __init__(self) -> None:
         super().__init__()
@@ -102,7 +102,6 @@ class LoaderBase(ABC):
     def get_es_client(self, host: str) -> Elasticsearch:
         """
         """
-        # host = "http://127.0.0.1:9200"
         es = Elasticsearch(host, verify_certs = False)
         return es
     

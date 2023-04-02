@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
 from utils.config_parser import houzz_story_base_url
-# houzz_story_base_url = "https://www.houzz.com/ideabooks/p/"
 
 logger = get_logger(name=__name__)
 
