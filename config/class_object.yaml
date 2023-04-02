@@ -3,15 +3,21 @@ extract:
     news: NewsExtractor
   src.tedtalk.tedtalk_data_extractor:
     tedtalk: TedtalkExtractor
+  src.houzz.houzz_data_extractor:
+    houzz: HouzzExtractor
 
 transform:
   src.news.news_data_transformer:
     news: NewsTransformer
   src.tedtalk.tedtalk_data_transformer:
     tedtalk: TedtalkTransformer
+  src.houzz.houzz_data_transformer:
+    houzz: HouzzTransformer
 
 load:
   src.news.news_data_loader:
     news: NewsLoader
   src.tedtalk.tedtalk_data_loader:
     tedtalk: TedtalkLoader
+  src.houzz.houzz_data_loader:
+    houzz: HouzzLoader

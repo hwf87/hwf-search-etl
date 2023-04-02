@@ -4,9 +4,13 @@ elasticsearch:
   password: ""
   op_type: "index"
   index_name:
-    news: cnn_t1
-    tedtalk: tedtalk_t1
+    news: cnn
+    tedtalk: tedtalk
+    houzz: houzz
 
 youtube:
   api_base_url: "https://www.googleapis.com/youtube/v3"
   api_key: "AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"
+
+houzz: 
+  story_base_url: "https://www.houzz.com/ideabooks/p/"

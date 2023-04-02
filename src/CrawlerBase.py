@@ -1,6 +1,9 @@
 #-*- coding: UTF-8 -*-
 
 import requests
+import threading
+from typing import Callable
+from queue import Queue
 from retry import retry
 from bs4 import BeautifulSoup
 from elasticsearch import Elasticsearch, helpers
@@ -14,6 +17,7 @@ logger = get_logger(name=__name__)
 class ExtractorBase(ABC):
     def __init__(self) -> None:
         super().__init__()
+        self.jobs = Queue()
         self.headers = {
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36'
         }
@@ -40,6 +44,27 @@ class ExtractorBase(ABC):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
+    
+    @log(logger)
+    def multi_thread_process(self, all_url_list: list, process_func: Callable, thread_num: int = 10):
+        """
+        """
+        for page_url in all_url_list:
+            self.jobs.put(page_url) 
+        for thread_idx in range(0, thread_num):
+            logger.info(f"Start Thraed NO.: {thread_idx+1}")
+            worker = threading.Thread(target=self.consume_jobs, args=(self.jobs, process_func,))
+            worker.start()
+        self.jobs.join()
+
+    @log(logger)
+    def consume_jobs(self, job_queue: Queue, func: Callable) -> None:
+        """
+        """
+        while not job_queue.empty():
+            url = job_queue.get()
+            func(url = url)
+            job_queue.task_done()
 
 # NER model for data Inference
 class TransformerBase(ABC):

@@ -1,7 +1,10 @@
 import os
 import logging
+from typing import Callable
 
 def get_logger(name: str) -> logging:
+    """
+    """
     logger = logging.getLogger(f"{name}")
     handler = logging.StreamHandler()
     formatter = logging.Formatter('time: %(asctime)s | funcName: %(funcName)s | line: %(lineno)d | level: %(levelname)s | message:{%(message)s}')
@@ -10,7 +13,9 @@ def get_logger(name: str) -> logging:
     logger.setLevel(logging.DEBUG)
     return logger
 
-def log(logger: str):
+def log(logger: str) -> Callable:
+    """
+    """
     def exception_handler(func):
         def inner_function(*args, **kwargs):
             filename = os.path.basename(func.__code__.co_filename)
