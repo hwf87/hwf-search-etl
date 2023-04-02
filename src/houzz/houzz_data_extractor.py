@@ -217,6 +217,36 @@ class HouzzExtractor(ExtractorBase):
             logger.warning(e)
             main_content = ""
         return main_content
+    
+    def get_story_meta_author(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            author = story.find("a", class_="hz-editorial-gallery-author-info__name hz-color-link hz-color-link--none hz-color-link--enabled").text
+        except Exception as e:
+            logger.warning(e)
+            author = ""
+        return author
+    
+    def get_story_meta_description(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            description = story.find("h2", class_="hz-editorial-gallery__subtitle").text
+        except Exception as e:
+            logger.warning(e)
+            description = ""
+        return description
+    
+    def get_story_meta_title(self, story: BeautifulSoup) -> list:
+        """
+        """
+        try:
+            title = story.find("h1", class_="hz-editorial-gallery__title").text
+        except Exception as e:
+            logger.warning(e)
+            title = ""
+        return title
 
     def get_detail_form_story_page(self, url: str):
         """
@@ -225,6 +255,10 @@ class HouzzExtractor(ExtractorBase):
         logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
         soup = self.bs4_parser(url = url)
         story_detail = {
+            "title": self.get_story_meta_title(story = soup),
+            "description": self.get_story_meta_description(story = soup),
+            "author": self.get_story_meta_author(story = soup),
+            "link": url,
             "main_content": self.get_story_meta_main_content(story = soup),
             "tags": self.get_story_meta_tags(story = soup),
             "related_tags": self.get_story_meta_related_tags(story = soup),
@@ -246,6 +280,19 @@ class HouzzExtractor(ExtractorBase):
         # related_tags = [r_tag.text for r_tag in related_tags]
         # print(f"related_tags: {related_tags}")
         
+        # # author
+        # author = soup.find("a", class_="hz-editorial-gallery-author-info__name hz-color-link hz-color-link--none hz-color-link--enabled").text
+        # print(f"author: {author}")
+
+        # # description
+        # description = soup.find("h2", class_="hz-editorial-gallery__subtitle").text
+        # print(f"description: {description}")
+
+        # # title hz-editorial-gallery__title
+        # title = soup.find("h1", class_="hz-editorial-gallery__title").text
+        # print(f"title: {title}")
+
+        # TODO:images
 
         
 
