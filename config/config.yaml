@@ -1,5 +1,6 @@
 elasticsearch:
-  host: "http://127.0.0.1:9200"
+  # host: "http://127.0.0.1:9200"
+  host: "http://elk_elastic:9200"
   username: ""
   password: ""
   op_type: "index"
@@ -7,13 +8,16 @@ elasticsearch:
     news: cnn
     tedtalk: tedtalk
     houzz: houzz
-    
+
+torch:
+  model_path: "./model/sentence_embedding_model.pth"
+
 tedtalk:
   base_url: "https://www.ted.com"
 
 youtube:
   api_base_url: "https://www.googleapis.com/youtube/v3"
-  api_key: "AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"
+  # api_key: "AIzaSyDxLknOj3nYnOjKs0Uc83omWXwNH6_TdHI"
 
 houzz: 
   story_base_url: "https://www.houzz.com/ideabooks/p/"

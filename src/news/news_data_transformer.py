@@ -2,19 +2,19 @@
 
 import sys
 import json
+import torch
 import pandas as pd
 sys.path.append("../..")
 from src.CrawlerBase import TransformerBase
 from utils.utils import get_logger, log
-from sentence_transformers import SentenceTransformer
+from utils.config_parser import torch_model_path
 
 logger = get_logger(name=__name__)
 
 class NewsTransformer(TransformerBase):
     def __init__(self):
         super().__init__()
-        self.model_path = 'paraphrase-multilingual-MiniLM-L12-v2'
-        self.model = SentenceTransformer(self.model_path)
+        self.model = torch.load(torch_model_path)
 
     @log(logger)
     def transform(self, input_json_list: list) -> list:
@@ -33,7 +33,7 @@ class NewsTransformer(TransformerBase):
             results_chunk = df_chunk.to_json(orient="records")
             results_chunk = json.loads(results_chunk)
             results += results_chunk
-
+    
         return results
     
     @log(logger)
