@@ -10,6 +10,7 @@ from elasticsearch import Elasticsearch, helpers
 from typing import Iterator
 from abc import ABC, abstractmethod
 from utils.utils import get_logger, log
+from utils.config_parser import elasticsearch_host, elasticsearch_username, elasticsearch_password
 
 logger = get_logger(name=__name__)
 
@@ -99,10 +100,10 @@ class LoaderBase(ABC):
 
     @log(logger)
     @retry(tries=5, delay=3, backoff=2 ,max_delay=60)
-    def get_es_client(self, host: str) -> Elasticsearch:
+    def get_es_client(self) -> Elasticsearch:
         """
         """
-        es = Elasticsearch(host, verify_certs = False)
+        es = Elasticsearch(elasticsearch_host, basic_auth=(elasticsearch_username, elasticsearch_password), verify_certs = False)
         return es
     
     @log(logger)

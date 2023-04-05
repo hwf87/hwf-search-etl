@@ -24,19 +24,20 @@ class FieldName:
 fn = FieldName()
 
 # Env variables
-youtube_api_key = os.environ.get["YOUTUBE_API_KEY"]
+youtube_api_key = os.environ["YOUTUBE_API_KEY"]
+elasticsearch_host = os.environ["ES_HOST"]
+elasticsearch_username = os.environ["ES_USERNAME"]
+elasticsearch_password = os.environ["ES_PASSWORD"]
 
 # Common Config
 with open("./config/config.yaml", "r") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
-    elasticsearch_host = config["elasticsearch"]["host"]
     elasticsearch_index_name_news = config["elasticsearch"]["index_name"]["news"]
     elasticsearch_index_name_tedtalk = config["elasticsearch"]["index_name"]["tedtalk"]
     elasticsearch_index_name_houzz = config["elasticsearch"]["index_name"]["houzz"]
     torch_model_path = config["torch"]["model_path"]
     tedtalk_base_url = config["tedtalk"]["base_url"]
     youtube_api_base_url = config["youtube"]["api_base_url"]
-    # youtube_api_key = config["youtube"]["api_key"]
     houzz_story_base_url = config["houzz"]["story_base_url"]
     f.close()
 

@@ -1,89 +1,31 @@
-version: '3.7'
-services:  
-  es-node1:
+version: "3.0"
+services:
+  elasticsearch:
+    container_name: es-container
     image: elasticsearch:7.17.9
-    container_name: es-node1
     environment:
-      - node.name=es-node1
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es-node2,es-node3
-      - cluster.initial_master_nodes=es-node1
-      - bootstrap.memory_lock=true
-      - "http.cors.allow-origin=*"
-      - "http.cors.enabled=true"
-      - "discovery.zen.minimum_master_nodes=2"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    # volumes:
-    #   - data01:/usr/share/elasticsearch/data
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.audit.enabled=true
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    networks:
+      - elastic
     ports:
       - 9200:9200
-    networks:
-      - elastic
-  es-node2:
-    image: elasticsearch:7.17.9
-    container_name: es-node2
-    environment:
-      - node.name=es-node2
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es-node1,es-node3
-      - cluster.initial_master_nodes=es-node1,es-node2,es-node3
-      - bootstrap.memory_lock=true
-      - "http.cors.allow-origin=*"
-      - "http.cors.enabled=true"
-      - "discovery.zen.minimum_master_nodes=2"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    # volumes:
-    #   - data02:/usr/share/elasticsearch/data
-    networks:
-      - elastic
-  es-node3:
-    image: elasticsearch:7.17.9
-    container_name: es-node3
-    environment:
-      - node.name=es-node3
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es-node1,es-node2
-      - cluster.initial_master_nodes=es-node1,es-node2,es-node3
-      - bootstrap.memory_lock=true
-      - "http.cors.allow-origin=*"
-      - "http.cors.enabled=true"
-      - "discovery.zen.minimum_master_nodes=2"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    # volumes:
-    #   - data03:/usr/share/elasticsearch/data
-    networks:
-      - elastic
   kibana:
+    container_name: kb-container
     image: kibana:7.17.9
-    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=elastic
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
     ports:
       - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://es-node1:9200
-      ELASTICSEARCH_HOSTS: http://es-node1:9200
-    networks:
-      - elastic
-
-# volumes:
-#   data01:
-#     driver: local
-#   data02:
-#     driver: local
-#   data03:
-#     driver: local
-
 networks:
   elastic:
     driver: bridge

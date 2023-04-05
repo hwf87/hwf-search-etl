@@ -3,10 +3,4 @@ COPY . /app
 WORKDIR /app
 RUN pip install -U pip
 RUN pip install -r requirements.txt
-# ENTRYPOINT ["python", "beam_pipeline.py"]
-CMD ["python", "beam_pipeline.py"]
-
-
-
-# docker build --tag search-etl -f Beam.Dockerfile .
-# docker run --network elk_elastic --env-file .env search-etl
+ENTRYPOINT ["python", "beam_pipeline.py"]

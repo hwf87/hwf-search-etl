@@ -1,4 +1,7 @@
 {
+    "aliases": {
+        "hwf": {}
+    },
     "mappings" : {
         "dynamic" : "true",
         "properties" : {
@@ -31,14 +34,5 @@
                 "type" : "text"
             }
         }
-    },
-    "settings" : {
-        "index" : {
-        "number_of_shards" : "2",
-        "number_of_replicas" : "1"
-        }
-    },
-    "aliases": {
-        "hwf": {}
     }
 }
