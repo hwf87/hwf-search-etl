@@ -25,10 +25,7 @@ class HouzzExtractor(ExtractorBase):
         story_count = self.get_story_count(url = houzz_story_base_url + str(start_page))
 
         # list done all url pages
-        page_url_list = self.get_page_url_list(story_count = story_count, start_page = start_page)
-        
-        ## for testing only => limit to 30 pages
-        # page_url_list = page_url_list[:30]
+        page_url_list = self.get_page_url_list(story_count = story_count, start_page = start_page, end_page = 3)
         
         # start multi-thread to prase story url from each single collect page
         self.multi_thread_process(all_url_list = page_url_list, process_func = self.get_stories_from_page, thread_num = 10)

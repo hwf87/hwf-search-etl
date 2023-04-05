@@ -1,0 +1,31 @@
+version: "3.0"
+services:
+  elasticsearch:
+    container_name: es-container
+    image: elasticsearch:7.17.9
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.audit.enabled=true
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+  kibana:
+    container_name: kb-container
+    image: kibana:7.17.9
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=elastic
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+networks:
+  elastic:
+    driver: bridge
