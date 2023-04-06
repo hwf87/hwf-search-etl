@@ -1,7 +1,9 @@
 import os
 import yaml
 import sys
+
 sys.path.append("..")
+
 
 class FieldName:
     def __init__(self) -> None:
@@ -20,12 +22,14 @@ class FieldName:
         self.related_tags = "related_tags"
         self.comment_count = "comment_count"
 
+
 class FieldType:
     def __init__(self) -> None:
         self.alias = {"hwf": {}}
         self.text = {"type": "text"}
         self.keyword = {"type": "keyword"}
-        self.dense_vector_384 = {"type" : "dense_vector", "dims" : 384}
+        self.dense_vector_384 = {"type": "dense_vector", "dims": 384}
+
 
 # Common Field Name & Field Type
 fn_ = FieldName()
@@ -34,56 +38,56 @@ ft_ = FieldType()
 # Elasticsearch Index Schema
 tedtalk_schema = {
     "aliases": ft_.alias,
-    "mappings" : {
-        "properties" : {
-            fn_.uid : ft_.text,
-            fn_.author : ft_.keyword,
-            fn_.embeddings : ft_.dense_vector_384,
-            fn_.title : ft_.text,
-            fn_.details : ft_.text,
-            fn_.link : ft_.text,
-            fn_.tags : ft_.keyword,
-            fn_.views : ft_.text,
-            fn_.posted: ft_.text
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.author: ft_.keyword,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.views: ft_.text,
+            fn_.posted: ft_.text,
         }
-    }
+    },
 }
 
 news_schema = {
     "aliases": ft_.alias,
-    "mappings" : {
-        "properties" : {
-            fn_.uid : ft_.text,
-            fn_.channel : ft_.keyword,
-            fn_.embeddings : ft_.dense_vector_384,
-            fn_.title : ft_.text,
-            fn_.details : ft_.text,
-            fn_.link : ft_.text,
-            fn_.tags : ft_.keyword,
-            fn_.views : ft_.text,
-            fn_.likes : ft_.text,
-            fn_.posted : ft_.text,
-            fn_.comment_count : ft_.text
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.channel: ft_.keyword,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.views: ft_.text,
+            fn_.likes: ft_.text,
+            fn_.posted: ft_.text,
+            fn_.comment_count: ft_.text,
         }
-    }
+    },
 }
 
 houzz_schema = {
     "aliases": ft_.alias,
-    "mappings" : {
-        "properties" : {
-            fn_.uid : ft_.text,
-            fn_.author : ft_.keyword,
-            fn_.description : ft_.text,
-            fn_.embeddings : ft_.dense_vector_384,
-            fn_.title : ft_.text,
-            fn_.details : ft_.text,
-            fn_.link : ft_.text,
-            fn_.tags : ft_.keyword,
-            fn_.related_tags : ft_.keyword,
-            fn_.posted : ft_.text,
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.author: ft_.keyword,
+            fn_.description: ft_.text,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.related_tags: ft_.keyword,
+            fn_.posted: ft_.text,
         }
-    }
+    },
 }
 
 # Env variables
