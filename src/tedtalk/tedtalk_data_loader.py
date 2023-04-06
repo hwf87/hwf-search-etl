@@ -4,7 +4,7 @@ import sys
 sys.path.append("../..")
 from src.CrawlerBase import LoaderBase
 from utils.utils import get_logger, log
-from utils.config_parser import elasticsearch_index_name_tedtalk, tedtalk_schema
+from utils.config_parser import elasticsearch_index_name_tedtalk, tedtalk_schema, fn_
 
 logger = get_logger(name=__name__)
 
@@ -34,7 +34,7 @@ class TedtalkLoader(LoaderBase):
         """
         """
         for document in documents:
-            document_id = document["uid"]
+            document_id = document[fn_.uid]
             actions = {
                 "_op_type": op_type,
                 "_index": index_name,

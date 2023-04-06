@@ -5,7 +5,7 @@ import requests
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
-from utils.config_parser import youtube_api_base_url, youtube_api_key
+from utils.config_parser import youtube_api_base_url, youtube_api_key, fn_
 
 logger = get_logger(name=__name__)
 
@@ -55,16 +55,16 @@ class NewsExtractor(ExtractorBase):
         """
         url_ = f"https://www.youtube.com/watch?v={metadata['id']}"
         info = {
-            'uid': metadata['id'],
-            'channel': metadata['snippet'].get('channelTitle', ""),
-            'tags': metadata['snippet'].get('tags', []),
-            'posted': metadata['snippet'].get('publishedAt', ""),
-            'link': url_,
-            'title': metadata['snippet'].get('title', ""),
-            'details': metadata['snippet'].get('description', ""),
-            'likes': metadata['statistics'].get('likeCount', ""),
-            'comment_count': metadata['statistics'].get('commentCount', ""),
-            'views': metadata['statistics'].get('viewCount', "")
+            fn_.uid: metadata['id'],
+            fn_.channel: metadata['snippet'].get('channelTitle', ""),
+            fn_.tags: metadata['snippet'].get('tags', []),
+            fn_.posted: metadata['snippet'].get('publishedAt', ""),
+            fn_.link: url_,
+            fn_.title: metadata['snippet'].get('title', ""),
+            fn_.details: metadata['snippet'].get('description', ""),
+            fn_.likes: metadata['statistics'].get('likeCount', ""),
+            fn_.comment_count: metadata['statistics'].get('commentCount', ""),
+            fn_.views: metadata['statistics'].get('viewCount', "")
         }
         return info
     

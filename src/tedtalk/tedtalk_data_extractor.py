@@ -7,7 +7,7 @@ from retry import retry
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
-from utils.config_parser import tedtalk_base_url
+from utils.config_parser import tedtalk_base_url, fn_
 
 logger = get_logger(name=__name__)
 
@@ -49,20 +49,19 @@ class TedtalkExtractor(ExtractorBase):
         """
         author = talk.find(class_="h12 talk-link__speaker").text.replace("\n", "")
         title = talk.find(class_="ga-link").text.replace("\n", "")
-        # base_url = "https://www.ted.com"
         link = tedtalk_base_url + talk.find("a", class_="ga-link")['href']
         posted = talk.find(class_="meta__val").text.replace("\n", "")
         details, tags, views = self.parse_extra_info(talk_url = link)
         uid = link.split("/")[-1]
         result = {
-            "uid": uid, 
-            "author": author, 
-            "title": title, 
-            "link": link, 
-            "posted": posted, 
-            "details": details, 
-            "tags": tags, 
-            "views": views
+            fn_.uid: uid, 
+            fn_.author: author, 
+            fn_.title: title, 
+            fn_.link: link, 
+            fn_.posted: posted, 
+            fn_.details: details, 
+            fn_.tags: tags, 
+            fn_.views: views
         }
 
         return result

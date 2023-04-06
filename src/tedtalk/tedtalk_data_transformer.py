@@ -7,7 +7,7 @@ import pandas as pd
 sys.path.append("../..")
 from src.CrawlerBase import TransformerBase
 from utils.utils import get_logger, log
-from utils.config_parser import torch_model_path
+from utils.config_parser import torch_model_path, fn_
 
 
 logger = get_logger(name=__name__)
@@ -30,7 +30,7 @@ class TedtalkTransformer(TransformerBase):
             logger.info(f"Chunk No.: {idx}")
             df_chunk = pd.DataFrame(chunk)
 
-            df_chunk["embeddings"] = self.inference(batch_texts = df_chunk["details"].tolist())
+            df_chunk[fn_.embeddings] = self.inference(batch_texts = df_chunk[fn_.details].tolist())
             results_chunk = df_chunk.to_json(orient="records")
             results_chunk = json.loads(results_chunk)
             results += results_chunk

@@ -5,7 +5,7 @@ sys.path.append("../..")
 from bs4 import BeautifulSoup
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
-from utils.config_parser import houzz_story_base_url
+from utils.config_parser import houzz_story_base_url, fn_
 
 logger = get_logger(name=__name__)
 
@@ -169,15 +169,15 @@ class HouzzExtractor(ExtractorBase):
         logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
         soup = self.bs4_parser(url = url)
         story_detail = {
-            "uid": self.get_unique_story_id(url = url),
-            "title": self.get_story_meta_title(story = soup),
-            "description": self.get_story_meta_description(story = soup),
-            "author": self.get_story_meta_author(story = soup),
-            "link": url,
-            "details": self.get_story_meta_main_content(story = soup),
-            "tags": self.get_story_meta_tags(story = soup),
-            "related_tags": self.get_story_meta_related_tags(story = soup),
-            "posted": self.get_story_meta_posted(story = soup)
+            fn_.uid: self.get_unique_story_id(url = url),
+            fn_.title: self.get_story_meta_title(story = soup),
+            fn_.description: self.get_story_meta_description(story = soup),
+            fn_.author: self.get_story_meta_author(story = soup),
+            fn_.link: url,
+            fn_.details: self.get_story_meta_main_content(story = soup),
+            fn_.tags: self.get_story_meta_tags(story = soup),
+            fn_.related_tags: self.get_story_meta_related_tags(story = soup),
+            fn_.posted: self.get_story_meta_posted(story = soup)
         }
         self.story_detail_list.append(story_detail)
 
