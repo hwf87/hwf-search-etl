@@ -27,7 +27,9 @@ class InitObject:
         class_object_dict = {}
         for key, val in class_config_dict.items():
             for key2, val2 in val.items():
-                class_object_dict[key2] = getattr(importlib.import_module(key), val2)
+                class_object_dict[key2] = getattr(
+                    importlib.import_module(key), val2
+                )
         return class_object_dict
 
     @log(logger)
@@ -42,6 +44,10 @@ class InitObject:
     def _create(self, key) -> dict:
         """ """
         class_config_dict = self.class_config[key]
-        class_object_dict = self._load_class(class_config_dict=class_config_dict)
-        instance_calss_dict = self._instance_class(class_object_dict=class_object_dict)
+        class_object_dict = self._load_class(
+            class_config_dict = class_config_dict
+        )
+        instance_calss_dict = self._instance_class(
+            class_object_dict = class_object_dict
+        )
         return instance_calss_dict

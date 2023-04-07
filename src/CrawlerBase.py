@@ -127,7 +127,9 @@ class LoaderBase(ABC):
 
     @log(logger)
     @retry(tries=5, delay=3, backoff=2, max_delay=60)
-    def create_index(self, index_name: str, body: dict, es: Elasticsearch) -> None:
+    def create_index(
+        self, index_name: str, body: dict, es: Elasticsearch
+    ) -> None:
         """ """
         res = es.indices.create(index=index_name, body=body)
         status_code = res.meta.status

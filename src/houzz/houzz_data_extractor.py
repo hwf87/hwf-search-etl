@@ -24,7 +24,9 @@ class HouzzExtractor(ExtractorBase):
         """
         # get total story count
         start_page = 0
-        story_count = self.get_story_count(url=houzz_story_base_url + str(start_page))
+        story_count = self.get_story_count(
+            url=houzz_story_base_url + str(start_page)
+        )
 
         # list done all url pages
         page_url_list = self.get_page_url_list(
@@ -39,7 +41,9 @@ class HouzzExtractor(ExtractorBase):
         )
 
         # start multi-thread to parse story detail from each single story page
-        story_url_list = [url for url in set(self.story_list) if "https://" in url]
+        story_url_list = [
+            url for url in set(self.story_list) if "https://" in url
+        ]
         self.multi_thread_process(
             all_url_list=story_url_list,
             process_func=self.get_detail_form_story_page,
@@ -52,7 +56,9 @@ class HouzzExtractor(ExtractorBase):
     def get_story_count(self, url: str) -> int:
         """ """
         soup = self.bs4_parser(url=url)
-        count = soup.find("span", class_="hz-browse-galleries__header-story-count").text
+        count = soup.find(
+            "span", class_="hz-browse-galleries__header-story-count"
+        ).text
         count = int(count.split(" ")[0])
 
         return count
@@ -66,7 +72,7 @@ class HouzzExtractor(ExtractorBase):
         story_per_page: int = 11,
     ) -> list:
         """ """
-        if end_page == None:
+        if end_page is None:
             end_page = int(story_count / story_per_page) + 1
 
         page_url_list = []
@@ -99,7 +105,9 @@ class HouzzExtractor(ExtractorBase):
         stories = soup.find_all(
             "div", class_="gallery-card hz-browse-galleries-list__gallery"
         )
-        story_list_tmp = [self.get_story_link_from_page(story) for story in stories]
+        story_list_tmp = [
+            self.get_story_link_from_page(story) for story in stories
+        ]
         self.story_list += story_list_tmp
 
     def get_story_meta_posted(self, story: BeautifulSoup) -> str:
@@ -130,7 +138,8 @@ class HouzzExtractor(ExtractorBase):
         """ """
         try:
             related_tags = story.find_all(
-                "div", class_="hz-editorial-gallery-related-categories__item__name"
+                "div",
+                class_="hz-editorial-gallery-related-categories__item__name",
             )
             related_tags = [r_tag.text for r_tag in related_tags]
         except Exception as e:
@@ -164,7 +173,9 @@ class HouzzExtractor(ExtractorBase):
     def get_story_meta_description(self, story: BeautifulSoup) -> list:
         """ """
         try:
-            description = story.find("h2", class_="hz-editorial-gallery__subtitle").text
+            description = story.find(
+                "h2", class_="hz-editorial-gallery__subtitle"
+            ).text
         except Exception as e:
             logger.warning(e)
             description = ""
@@ -173,7 +184,9 @@ class HouzzExtractor(ExtractorBase):
     def get_story_meta_title(self, story: BeautifulSoup) -> list:
         """ """
         try:
-            title = story.find("h1", class_="hz-editorial-gallery__title").text
+            title = story.find(
+                "h1", class_="hz-editorial-gallery__title"
+            ).text
         except Exception as e:
             logger.warning(e)
             title = ""

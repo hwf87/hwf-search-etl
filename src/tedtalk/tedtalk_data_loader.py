@@ -5,7 +5,11 @@ import sys
 sys.path.append("../..")
 from src.CrawlerBase import LoaderBase
 from utils.utils import get_logger, log
-from utils.config_parser import elasticsearch_index_name_tedtalk, tedtalk_schema, fn_
+from utils.config_parser import (
+    elasticsearch_index_name_tedtalk,
+    tedtalk_schema,
+    fn_,
+)
 
 logger = get_logger(name=__name__)
 
@@ -23,10 +27,12 @@ class TedtalkLoader(LoaderBase):
         )
         if not index_exist:
             self.create_index(
-                index_name=elasticsearch_index_name_tedtalk, body=tedtalk_schema, es=es
+                index_name=elasticsearch_index_name_tedtalk,
+                body=tedtalk_schema,
+                es=es,
             )
 
-        if index_exist != None:
+        if index_exist is not None:
             self.bulk_insert(
                 actions=self.load_action_batch(
                     op_type="index",
@@ -37,14 +43,16 @@ class TedtalkLoader(LoaderBase):
             )
 
     @log(logger)
-    def load_action_batch(self, op_type: str, index_name: str, documents: list) -> dict:
+    def load_action_batch(
+        self, op_type: str, index_name: str, documents: list
+    ) -> dict:
         """ """
         for document in documents:
             document_id = document[fn_.uid]
             actions = {
                 "_op_type": op_type,
                 "_index": index_name,
-                # "_id": document_id,
+                "_id": document_id,
                 "_source": document,
             }
             yield actions

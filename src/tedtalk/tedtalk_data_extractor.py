@@ -41,7 +41,9 @@ class TedtalkExtractor(ExtractorBase):
             "li", class_="mr-2 inline-block last:mr-0 css-wzaabn e1r7k7tp0"
         )
         tags = [t.text for t in tags]
-        views = soup.find("div", class_="flex flex-1 items-center overflow-hidden").text
+        views = soup.find(
+            "div", class_="flex flex-1 items-center overflow-hidden"
+        ).text
         views = views.split(" ")[0].replace(",", "")
 
         return details, tags, views
@@ -94,7 +96,8 @@ class TedtalkExtractor(ExtractorBase):
         logger.info(f"PAGES: {pages}")
         # create page url list
         page_url_list = [
-            f"{url}&page={str(current_page)}" for current_page in range(1, pages + 1)
+            f"{url}&page={str(current_page)}"
+            for current_page in range(1, pages + 1)
         ]
         # multi thread process to parse tedtalk metadata
         thread_number = len(page_url_list)

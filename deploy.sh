@@ -19,3 +19,4 @@
 # docker run --rm --network elk_elastic --env-file .env search-etl
 
 
+# flake8 --ignore=E402,W503

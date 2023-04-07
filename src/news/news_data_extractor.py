@@ -21,9 +21,8 @@ class NewsExtractor(ExtractorBase):
         part = "contentDetails"
         url = f"{youtube_api_base_url}/channels?part={part}&forUsername={channel_username}&key={youtube_api_key}"
         result = requests.get(url).json()
-        playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"][
-            "uploads"
-        ]
+        playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+
         return playlist_id
 
     @log(logger)
@@ -41,7 +40,7 @@ class NewsExtractor(ExtractorBase):
         while nextPageToken != "":
             logger.info(f"YouTube Page No.: {idx}")
             url = f"{youtube_api_base_url}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={youtube_api_key}"
-            if nextPageToken != None:
+            if nextPageToken is not None:
                 url += f"&pageToken={nextPageToken}"
             result = requests.get(url).json()
 
@@ -52,7 +51,7 @@ class NewsExtractor(ExtractorBase):
             ]
             video_id_list += video_id_tmp
             idx += 1
-            if pages == None:
+            if pages is None:
                 continue
             if idx > pages:
                 break
@@ -88,7 +87,9 @@ class NewsExtractor(ExtractorBase):
         result = requests.get(url).json()
 
         meta_list = result["items"]
-        infos = [self.parse_video_metadata(metadata) for metadata in meta_list]
+        infos = [
+            self.parse_video_metadata(metadata) for metadata in meta_list
+        ]
 
         return infos
 
@@ -105,7 +106,9 @@ class NewsExtractor(ExtractorBase):
         totalResults, nextPageToken, video_id_list = self.get_video_id_list(
             playlist_id=playlist_id, results_per_page="50", pages=5
         )
-        logger.info(f"totalResults: {totalResults}, nextPageToken: {nextPageToken}")
+        logger.info(
+            f"totalResults: {totalResults}, nextPageToken: {nextPageToken}"
+        )
 
         # get videos info
         video_id_list = self.chunks(video_id_list, 50)
