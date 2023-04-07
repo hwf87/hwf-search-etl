@@ -9,7 +9,7 @@ logger = get_logger(name=__name__)
 
 
 @log(logger)
-def run():
+def run() -> None:
     """ """
     data_source = sys.argv[1]  # ["houzz", "news", "tedtalk"]
     logger.info(f"Data Source: {data_source}")

@@ -4,6 +4,8 @@ import sys
 import time
 from tqdm import tqdm
 from retry import retry
+from bs4 import BeautifulSoup
+from typing import List, Dict, Tuple
 
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
@@ -30,7 +32,7 @@ class TedtalkExtractor(ExtractorBase):
         return int(page_num)
 
     @retry(tries=5, delay=3, backoff=2, max_delay=30)
-    def parse_extra_info(self, talk_url: str) -> tuple:
+    def parse_extra_info(self, talk_url: str) -> Tuple[str, list, str]:
         """
         RETURN: details, tags, views
         TO-DO: transcript, duration, likes, language
@@ -49,7 +51,7 @@ class TedtalkExtractor(ExtractorBase):
         return details, tags, views
 
     @log(logger)
-    def parse_basic_info(self, talk: object) -> tuple:
+    def parse_basic_info(self, talk: BeautifulSoup) -> Dict[str, str]:
         """
         parse basic in for given talks raw meta
         """
@@ -85,7 +87,7 @@ class TedtalkExtractor(ExtractorBase):
             self.all_results += [self.parse_basic_info(talk)]
 
     @log(logger)
-    def extract(self) -> list:
+    def extract(self) -> List[dict]:
         """
         main logic
         """

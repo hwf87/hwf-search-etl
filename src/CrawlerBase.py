@@ -2,12 +2,11 @@
 
 import requests
 import threading
-from typing import Callable
 from queue import Queue
 from retry import retry
 from bs4 import BeautifulSoup
 from elasticsearch import Elasticsearch, helpers
-from typing import Iterator
+from typing import Iterator, Callable, List, Any
 from abc import ABC, abstractmethod
 from utils.utils import get_logger, log
 from utils.config_parser import (
@@ -45,7 +44,7 @@ class ExtractorBase(ABC):
         return soup
 
     @log(logger)
-    def chunks(self, lst, n) -> list:
+    def chunks(self, lst: List[Any], n: int) -> List[list]:
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i : i + n]
@@ -88,7 +87,7 @@ class TransformerBase(ABC):
         """ """
 
     @log(logger)
-    def chunks(self, lst, n) -> list:
+    def chunks(self, lst: List[Any], n: int) -> List[list]:
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i : i + n]

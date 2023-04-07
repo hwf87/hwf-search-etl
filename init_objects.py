@@ -2,6 +2,7 @@
 
 import yaml
 import importlib
+from typing import Dict
 from utils.utils import log, get_logger
 
 logger = get_logger(name=__name__)
@@ -15,14 +16,14 @@ class InitObject:
         self.load = self._create(key="load")
 
     @log(logger)
-    def _read_config(self, path: str) -> dict:
+    def _read_config(self, path: str) -> Dict[str, str]:
         """ """
         with open(path, "r") as f:
             class_config = yaml.load(f, Loader=yaml.FullLoader)
         return class_config
 
     @log(logger)
-    def _load_class(self, class_config_dict: dict) -> dict:
+    def _load_class(self, class_config_dict: Dict[str, str]) -> Dict[str, object]:
         """ """
         class_object_dict = {}
         for key, val in class_config_dict.items():
@@ -33,7 +34,7 @@ class InitObject:
         return class_object_dict
 
     @log(logger)
-    def _instance_class(self, class_object_dict: dict) -> dict:
+    def _instance_class(self, class_object_dict: Dict[str, str]) -> Dict[str, object]:
         """ """
         instance_calss_dict = {}
         for key, val in class_object_dict.items():
@@ -41,7 +42,7 @@ class InitObject:
         return instance_calss_dict
 
     @log(logger)
-    def _create(self, key) -> dict:
+    def _create(self, key: str) -> Dict[str, object]:
         """ """
         class_config_dict = self.class_config[key]
         class_object_dict = self._load_class(

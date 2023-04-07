@@ -2,6 +2,7 @@
 
 import sys
 import requests
+from typing import List, Dict, Tuple
 
 sys.path.append("../..")
 from src.CrawlerBase import ExtractorBase
@@ -32,7 +33,7 @@ class NewsExtractor(ExtractorBase):
         results_per_page: str,
         pages: int = None,
         nextPageToken: str = None,
-    ) -> list:
+    ) -> Tuple[str, str, List[str]]:
         """ """
         idx = 1
         part = "contentDetails"
@@ -59,7 +60,7 @@ class NewsExtractor(ExtractorBase):
         return totalResults, nextPageToken, video_id_list
 
     @log(logger)
-    def parse_video_metadata(self, metadata: dict) -> dict:
+    def parse_video_metadata(self, metadata: Dict[str, str]) -> Dict[str, str]:
         """ """
         url_ = f"https://www.youtube.com/watch?v={metadata['id']}"
         info = {
@@ -77,7 +78,7 @@ class NewsExtractor(ExtractorBase):
         return info
 
     @log(logger)
-    def get_video_info(self, video_id_list: list) -> dict:
+    def get_video_info(self, video_id_list: List[str]) -> List[dict]:
         """
         video_id_list length <= 50
         """
@@ -94,7 +95,7 @@ class NewsExtractor(ExtractorBase):
         return infos
 
     @log(logger)
-    def extract(self, channel_username: str = "CNN") -> list:
+    def extract(self, channel_username: str = "CNN") -> List[dict]:
         """
         main logic
         ChannelID: "UCupvZG-5ko_eiXAupbDfxWw"
@@ -115,7 +116,7 @@ class NewsExtractor(ExtractorBase):
         results = []
         for idx, vid_chunk in enumerate(video_id_list):
             logger.info(f"Video Chunk No.: {idx}")
-            chunck_result = self.get_video_info(video_id_list=vid_chunk)
-            results += chunck_result
+            chunk_result = self.get_video_info(video_id_list=vid_chunk)
+            results += chunk_result
 
         return results

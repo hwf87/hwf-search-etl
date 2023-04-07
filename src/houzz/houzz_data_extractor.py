@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import sys
+from typing import List
 
 sys.path.append("../..")
 from bs4 import BeautifulSoup
@@ -18,7 +19,7 @@ class HouzzExtractor(ExtractorBase):
         self.story_detail_list = []
 
     @log(logger)
-    def extract(self) -> list:
+    def extract(self) -> List[dict]:
         """
         main logic
         """
@@ -70,7 +71,7 @@ class HouzzExtractor(ExtractorBase):
         start_page: int = 0,
         end_page: int = None,
         story_per_page: int = 11,
-    ) -> list:
+    ) -> List[str]:
         """ """
         if end_page is None:
             end_page = int(story_count / story_per_page) + 1
@@ -96,7 +97,7 @@ class HouzzExtractor(ExtractorBase):
             link = ""
         return link
 
-    def get_stories_from_page(self, url: str):
+    def get_stories_from_page(self, url: str) -> None:
         """
         URL:: https://www.houzz.com/ideabooks/p/{IDX}
         """
@@ -121,7 +122,7 @@ class HouzzExtractor(ExtractorBase):
             posted = ""
         return posted
 
-    def get_story_meta_tags(self, story: BeautifulSoup) -> list:
+    def get_story_meta_tags(self, story: BeautifulSoup) -> List[str]:
         """ """
         try:
             tags = story.find_all(
@@ -134,7 +135,7 @@ class HouzzExtractor(ExtractorBase):
             tags = ""
         return tags
 
-    def get_story_meta_related_tags(self, story: BeautifulSoup) -> list:
+    def get_story_meta_related_tags(self, story: BeautifulSoup) -> List[str]:
         """ """
         try:
             related_tags = story.find_all(
@@ -147,7 +148,7 @@ class HouzzExtractor(ExtractorBase):
             related_tags = ""
         return related_tags
 
-    def get_story_meta_main_content(self, story: BeautifulSoup) -> list:
+    def get_story_meta_main_content(self, story: BeautifulSoup) -> str:
         """ """
         try:
             main_content = story.find(
@@ -158,7 +159,7 @@ class HouzzExtractor(ExtractorBase):
             main_content = ""
         return main_content
 
-    def get_story_meta_author(self, story: BeautifulSoup) -> list:
+    def get_story_meta_author(self, story: BeautifulSoup) -> str:
         """ """
         try:
             author = story.find(
@@ -170,7 +171,7 @@ class HouzzExtractor(ExtractorBase):
             author = ""
         return author
 
-    def get_story_meta_description(self, story: BeautifulSoup) -> list:
+    def get_story_meta_description(self, story: BeautifulSoup) -> str:
         """ """
         try:
             description = story.find(
@@ -181,7 +182,7 @@ class HouzzExtractor(ExtractorBase):
             description = ""
         return description
 
-    def get_story_meta_title(self, story: BeautifulSoup) -> list:
+    def get_story_meta_title(self, story: BeautifulSoup) -> str:
         """ """
         try:
             title = story.find(
@@ -198,7 +199,7 @@ class HouzzExtractor(ExtractorBase):
         return story_id
 
     @log(logger)
-    def get_detail_form_story_page(self, url: str):
+    def get_detail_form_story_page(self, url: str) -> None:
         """ """
         logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
         soup = self.bs4_parser(url=url)

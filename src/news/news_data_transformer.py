@@ -4,6 +4,7 @@ import sys
 import json
 import torch
 import pandas as pd
+from typing import List
 
 sys.path.append("../..")
 from src.CrawlerBase import TransformerBase
@@ -19,7 +20,7 @@ class NewsTransformer(TransformerBase):
         self.model = torch.load(torch_model_path)
 
     @log(logger)
-    def transform(self, input_json_list: list) -> list:
+    def transform(self, input_json_list: List[dict]) -> List[dict]:
         """ """
         logger.info(f"input_json_list Length: {len(input_json_list)}")
 
@@ -40,7 +41,7 @@ class NewsTransformer(TransformerBase):
         return results
 
     @log(logger)
-    def inference(self, batch_texts: list) -> list:
+    def inference(self, batch_texts: List[str]) -> List[list]:
         """ """
         embeddings = self.model.encode(batch_texts)
         batch_embeddings = embeddings.tolist()

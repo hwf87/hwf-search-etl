@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import sys
+from typing import List, Union, Mapping
 
 sys.path.append("../..")
 from src.CrawlerBase import LoaderBase
@@ -19,7 +20,7 @@ class HouzzLoader(LoaderBase):
         super().__init__()
 
     @log(logger)
-    def load(self, documents: list) -> None:
+    def load(self, documents: List[dict]) -> None:
         """ """
         es = self.get_es_client()
         index_exist = self.check_index(
@@ -45,7 +46,7 @@ class HouzzLoader(LoaderBase):
     @log(logger)
     def load_action_batch(
         self, op_type: str, index_name: str, documents: list
-    ) -> dict:
+    ) -> Mapping[str, Union[str, dict]]:
         """ """
         for document in documents:
             document_id = document[fn_.uid]

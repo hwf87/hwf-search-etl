@@ -1,7 +1,8 @@
 import sys
+import apache_beam as beam
+from typing import List, Dict
 
 sys.path.append("..")
-import apache_beam as beam
 from init_objects import InitObject
 from utils.utils import get_logger, log
 
@@ -14,7 +15,7 @@ class PreProcessor(beam.DoFn):
         super().__init__()
 
     @log(logger)
-    def process(self, source: str):
+    def process(self, source: str) -> List[dict]:
         """ """
         PRP = class_objects.extract[source]
         results = PRP.extract()
@@ -27,7 +28,7 @@ class InferenceProcessor(beam.DoFn):
         super().__init__()
 
     @log(logger)
-    def process(self, element: dict):
+    def process(self, element: Dict[str, str]) -> List[dict]:
         """ """
         source, data = element["source"], element["data"]
         IP = class_objects.transform[source]
@@ -41,7 +42,7 @@ class PostProcessor(beam.DoFn):
         super().__init__()
 
     @log(logger)
-    def process(self, element: dict):
+    def process(self, element: Dict[str, str]) -> None:
         """ """
         source, data = element["source"], element["data"]
         POP = class_objects.load[source]
