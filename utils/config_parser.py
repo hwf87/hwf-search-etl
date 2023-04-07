@@ -1,8 +1,9 @@
 import os
 import yaml
-import json
 import sys
+
 sys.path.append("..")
+
 
 class FieldName:
     def __init__(self) -> None:
@@ -16,12 +17,94 @@ class FieldName:
         self.author = "author"
         self.details = "details"
         self.channel = "channel"
+        self.embeddings = "embeddings"
         self.description = "description"
         self.related_tags = "related_tags"
         self.comment_count = "comment_count"
 
-# Common Field Naming 
-fn = FieldName()
+
+class FieldType:
+    def __init__(self) -> None:
+        self.alias = {"hwf": {}}
+        self.text = {"type": "text"}
+        self.keyword = {"type": "keyword"}
+        self.dense_vector_384 = {"type": "dense_vector", "dims": 384}
+
+
+# Common Field Name & Field Type
+fn_ = FieldName()
+ft_ = FieldType()
+
+# Elasticsearch Index Schema
+tedtalk_schema = {
+    "aliases": ft_.alias,
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.author: ft_.keyword,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.views: ft_.text,
+            fn_.posted: ft_.text,
+        }
+    },
+}
+
+news_schema = {
+    "aliases": ft_.alias,
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.channel: ft_.keyword,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.views: ft_.text,
+            fn_.likes: ft_.text,
+            fn_.posted: ft_.text,
+            fn_.comment_count: ft_.text,
+        }
+    },
+}
+
+houzz_schema = {
+    "aliases": ft_.alias,
+    "mappings": {
+        "properties": {
+            fn_.uid: ft_.text,
+            fn_.author: ft_.keyword,
+            fn_.description: ft_.text,
+            fn_.embeddings: ft_.dense_vector_384,
+            fn_.title: ft_.text,
+            fn_.details: ft_.text,
+            fn_.link: ft_.text,
+            fn_.tags: ft_.keyword,
+            fn_.related_tags: ft_.keyword,
+            fn_.posted: ft_.text,
+        }
+    },
+}
+
+# Month Map
+month_map = {
+    "Jan": "01",
+    "Feb": "02",
+    "Mar": "03",
+    "Apr": "04",
+    "May": "05",
+    "Jun": "06",
+    "Jul": "07",
+    "Aug": "08",
+    "Sep": "09",
+    "Oct": "10",
+    "Nov": "11",
+    "Dec": "12",
+}
 
 # Env variables
 youtube_api_key = os.environ["YOUTUBE_API_KEY"]
@@ -40,19 +123,3 @@ with open("./config/config.yaml", "r") as f:
     youtube_api_base_url = config["youtube"]["api_base_url"]
     houzz_story_base_url = config["houzz"]["story_base_url"]
     f.close()
-
-# Elasticsearch Index Schema
-with open("./config/es_index_schema/tedtalk.json", "r") as f:
-    tedtalk_schema = json.load(f)
-    f.close()
-with open("./config/es_index_schema/news.json", "r") as f:
-    news_schema = json.load(f)
-    f.close()
-with open("./config/es_index_schema/houzz.json", "r") as f:
-    houzz_schema = json.load(f)
-    f.close()
-    
-    
-    
-    
-
