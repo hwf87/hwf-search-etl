@@ -10,9 +10,10 @@ logger = get_logger(name=__name__)
 class_objects = InitObject(class_config_path="./config/class_object.yaml")
 
 
-class PreProcessor(beam.DoFn):
+class PreProcessor():
     def __init__(self):
-        super().__init__()
+        """ """
+        pass
 
     @log(logger)
     def process(self, source: str) -> List[dict]:
@@ -23,9 +24,10 @@ class PreProcessor(beam.DoFn):
         return [wrapper]
 
 
-class InferenceProcessor(beam.DoFn):
+class InferenceProcessor():
     def __init__(self):
-        super().__init__()
+        """ """
+        pass
 
     @log(logger)
     def process(self, element: Dict[str, str]) -> List[dict]:
@@ -37,9 +39,10 @@ class InferenceProcessor(beam.DoFn):
         return [wrapper]
 
 
-class PostProcessor(beam.DoFn):
+class PostProcessor():
     def __init__(self):
-        super().__init__()
+        """ """
+        pass
 
     @log(logger)
     def process(self, element: Dict[str, str]) -> None:
@@ -48,3 +51,18 @@ class PostProcessor(beam.DoFn):
         POP = class_objects.load[source]
         POP.load(data)
         logger.info(f"ETL JOB: [{source}] SUCCESS!!")
+
+
+class BeamPreProcessor(PreProcessor, beam.DoFn):
+    def __init__(self):
+        super().__init__()
+
+
+class BeamInferenceProcessor(InferenceProcessor, beam.DoFn):
+    def __init__(self):
+        super().__init__()
+
+
+class BeamPostProcessor(PostProcessor, beam.DoFn):
+    def __init__(self):
+        super().__init__()

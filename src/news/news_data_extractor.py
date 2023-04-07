@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import math
 import requests
 from typing import List, Dict, Tuple
 
@@ -39,7 +40,6 @@ class NewsExtractor(ExtractorBase):
         part = "contentDetails"
         video_id_list = []
         while nextPageToken != "":
-            logger.info(f"YouTube Page No.: {idx}")
             url = f"{youtube_api_base_url}/playlistItems?part={part}&playlistId={playlist_id}&maxResults={results_per_page}&key={youtube_api_key}"
             if nextPageToken is not None:
                 url += f"&pageToken={nextPageToken}"
@@ -51,6 +51,10 @@ class NewsExtractor(ExtractorBase):
                 item["contentDetails"]["videoId"] for item in result["items"]
             ]
             video_id_list += video_id_tmp
+
+            # Log status
+            total_page = int(math.ceil(int(totalResults)/int(results_per_page)))
+            logger.info(f"Total Pages: {total_page}, YouTube Page No.: {idx}")
             idx += 1
             if pages is None:
                 continue
@@ -105,7 +109,9 @@ class NewsExtractor(ExtractorBase):
 
         # get video id list
         totalResults, nextPageToken, video_id_list = self.get_video_id_list(
-            playlist_id=playlist_id, results_per_page="50", pages=5
+            playlist_id=playlist_id, 
+            results_per_page="50"
+            # , pages=5
         )
         logger.info(
             f"totalResults: {totalResults}, nextPageToken: {nextPageToken}"

@@ -5,6 +5,7 @@ import threading
 from queue import Queue
 from retry import retry
 from bs4 import BeautifulSoup
+from datetime import date, timedelta
 from elasticsearch import Elasticsearch, helpers
 from typing import Iterator, Callable, List, Any
 from abc import ABC, abstractmethod
@@ -48,6 +49,21 @@ class ExtractorBase(ABC):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i : i + n]
+
+    @log(logger)
+    def date_converter(self, input: str) -> str:
+        """ """
+        if input == "yesterday":
+            date_result = date.today() - timedelta(days = 1)
+        elif "days ago" in input:
+            days_ago = int(input.split(" ")[0])
+            date_result = date.today() - timedelta(days = days_ago)
+        elif "hours ago" in input or "hour ago" in input:
+            hours_ago = int(input.split(" ")[0])
+            date_result = date.today() - timedelta(hours = hours_ago)
+        else:
+            date_result = date.today()
+        return date_result
 
     @log(logger)
     def multi_thread_process(

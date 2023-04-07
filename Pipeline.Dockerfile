@@ -3,4 +3,4 @@ COPY . /app
 WORKDIR /app
 RUN pip install -U pip
 RUN pip install --timeout 600 -r requirements.txt
-ENTRYPOINT ["python", "beam_pipeline.py"]
+ENTRYPOINT ["python", "pipeline.py"]

@@ -7,7 +7,7 @@ sys.path.append("../..")
 from bs4 import BeautifulSoup
 from src.CrawlerBase import ExtractorBase
 from utils.utils import log, get_logger
-from utils.config_parser import houzz_story_base_url, fn_
+from utils.config_parser import houzz_story_base_url, month_map, fn_
 
 logger = get_logger(name=__name__)
 
@@ -31,7 +31,9 @@ class HouzzExtractor(ExtractorBase):
 
         # list done all url pages
         page_url_list = self.get_page_url_list(
-            story_count=story_count, start_page=start_page, end_page=3
+            story_count=story_count, 
+            start_page=start_page
+            , end_page=500
         )
 
         # start multi-thread to prase story url from each single collect page
@@ -117,6 +119,12 @@ class HouzzExtractor(ExtractorBase):
             posted = story.find(
                 "span", class_="hz-editorial-gallery-author-info__featured"
             ).text
+            if "ago" in posted or "yesterday" in posted:
+                posted = self.date_converter(input=posted)
+            else:
+                day, month, year = posted.split(" ")[1].replace(",", ""), posted.split(" ")[0], posted.split(" ")[2]
+                month = month_map.get(month[:3], "")
+                posted = f"{year}-{month}-{day}"
         except Exception as e:
             logger.warning(e)
             posted = ""
