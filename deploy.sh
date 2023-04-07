@@ -15,8 +15,5 @@
 # Build Airflow
 
 # Step 5.
-# docker build --tag search-etl -f Beam.Dockerfile .
+# docker build --tag search-etl -f Pipeline.Dockerfile .
 # docker run --rm --network elk_elastic --env-file .env search-etl
-
-
-# flake8 --ignore=E402,W503
