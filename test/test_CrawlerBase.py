@@ -13,6 +13,18 @@ class Test_ExtractorBase:
     @pytest.mark.parametrize("", [])
     def test_chunks(self):
         """ """
+    
+    @pytest.mark.parametrize("", [])
+    def test_date_converter(self):
+        """ """
+
+    @pytest.mark.parametrize("", [])
+    def test_multi_thread_process(self):
+        """ """
+
+    @pytest.mark.parametrize("", [])
+    def test_consume_jobs(self):
+        """ """
 
 
 class Test_TransformerBase:
