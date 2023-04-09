@@ -6,9 +6,8 @@ This is a data scraping project that sources data from the Houzz e-commerce plat
 ## Medium Blogs
 [[Data Engineering] Build a web crawling ETL pipeline with Apache Beam + Elasticsearch + Kibana](https://jackyfu1995.medium.com)
 
-## Architecture & Pipeline Design Overview
+## Architecture Overview
 ![plot](./images/app_arch.png)
-![plot](./images/pipeline_design.png)
 
 ## How to Start
 1. git clone https://github.com/hwf87/hwf-search-etl.git
@@ -66,6 +65,9 @@ docker images
 ```
 docker run --rm --network elk_elastic --env-file .env search-etl $RUN_MODE $DATA_SOURCE
 ```
+
+## Pipeline Design Pattern
+![plot](./images/pipeline_design.png)
 
 ## How to run without docker for Debuging
 1. Set environment variaables
