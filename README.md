@@ -62,9 +62,25 @@ docker images
 7. Run Pipeline
 - export RUN_MODE=local | beam
 - export DATA_SOURCE=houzz | news | tedtalk
+> In average, it'll take around 20 mins for crawling a single source for the most recent 5000 docs.
 ```
 docker run --rm --network elk_elastic --env-file .env search-etl $RUN_MODE $DATA_SOURCE
 ```
+
+8. Check Results
+- Visit http://127.0.0.1:5601 for Kibana and login (username/password)
+- Open the menu on the left, click Management >> Dev Tools
+- Run the following commands to check the index we just created
+```
+GET houzz/_count
+GET cnn/_count
+GET tedtalk/_count
+```
+![plot](./images/check_kibana.png)
+
+9. Create your own dashboard with Kibana
+- Create Index Pattern
+- Go to Analytics >> Dashboard
 
 ## Pipeline Design Pattern
 ![plot](./images/pipeline_design.png)
