@@ -3,6 +3,12 @@
 
 This is a data scraping project that sources data from the Houzz e-commerce platform, the CNN YouTube channel, and the TedTalk official website. The implementation uses the Apache Beam framework to build an ETL pipeline and write the results into an Elasticsearch database. The final step visualizes the crawler results using Kibana.
 
+## Medium Blogs
+[[Data Engineering] Build a web crawling ETL pipeline with Apache Beam + Elasticsearch + Kibana](https://jackyfu1995.medium.com)
+
+## Overview
+![plot](./images/app_arch.png)
+
 ## How to Start
 1. git clone https://github.com/hwf87/hwf-search-etl.git
 
@@ -58,4 +64,33 @@ docker images
 - export DATA_SOURCE=houzz | news | tedtalk
 ```
 docker run --rm --network elk_elastic --env-file .env search-etl $RUN_MODE $DATA_SOURCE
+```
+
+## How to run without docker for Debuging
+1. Set environment variaables
+```
+set -a
+source .env
+set +a
+```
+2. Execute Pipeline
+```
+conda activate search_engine
+python pipeline.py $RUN_MODE $DATA_SOURCE
+```
+
+## Unit Test
+```
+bash unit_test.sh
+```
+
+## Precommit
+- Black
+- Flake8
+```
+```
+
+## CI/CD
+- Githun Actions
+```
 ```
