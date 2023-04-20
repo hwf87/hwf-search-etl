@@ -1,5 +1,5 @@
 name: CI/CD PIPELINE
-run-name: ${{ github.actor }} is running Unit Test on GitHub Actions 🚀
+run-name: ${{ github.actor }} is running CI/CD on GitHub Actions 🚀
 on: [push]
 jobs:
   CI-Flow:
@@ -30,15 +30,17 @@ jobs:
         run: |
           pre-commit install --install-hooks
           pre-commit run --all-files
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Build image
         run: |
-          docker buildx build --platform=linux/amd64 --tag search-etl -f Pipeline.Dockerfile .
-      - name: Save image to github artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: search-etl
-          path: |
-            search-etl
+          docker buildx build --platform=linux/arm64/v8 --tag search-etl -f Pipeline.Dockerfile .
+      # - name: Save image to github artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: search-etl
+      #     path: |
+      #       search-etl
 
   # deploy:
   #   runs-on: ubuntu-latest
