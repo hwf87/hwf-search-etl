@@ -2,7 +2,7 @@ name: CI/CD PIPELINE
 run-name: ${{ github.actor }} is running CI/CD on GitHub Actions 🚀
 on: [push]
 jobs:
-  CI-Flow:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,19 +35,19 @@ jobs:
       - name: Build image
         run: |
           docker buildx build --platform=linux/arm64/v8 --tag search-etl -f Pipeline.Dockerfile .
-      # - name: Save image to github artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: search-etl
-      #     path: |
-      #       search-etl
+      - name: Save image to github artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: search-etl
+          path: |
+            search-etl
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Download artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: myimage
-  #         path: myimage
+  Deploy:
+    runs-on: ubuntu-latest
+    needs: [Build]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: search-etl
+          path: search-etl
