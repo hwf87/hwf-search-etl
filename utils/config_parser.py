@@ -13,6 +13,7 @@ class FieldName:
         self.title = "title"
         self.views = "views"
         self.likes = "likes"
+        self.images = "images"
         self.posted = "posted"
         self.author = "author"
         self.details = "details"
@@ -25,7 +26,8 @@ class FieldName:
 
 class FieldType:
     def __init__(self) -> None:
-        self.alias = {"hwf": {}}
+        self.alias = {"hwf_1": {}}
+        self.date = {"type": "date"}
         self.text = {"type": "text"}
         self.keyword = {"type": "keyword"}
         self.dense_vector_384 = {"type": "dense_vector", "dims": 384}
@@ -48,7 +50,7 @@ tedtalk_schema = {
             fn_.link: ft_.text,
             fn_.tags: ft_.keyword,
             fn_.views: ft_.text,
-            fn_.posted: ft_.text,
+            fn_.posted: ft_.date,
         }
     },
 }
@@ -66,7 +68,7 @@ news_schema = {
             fn_.tags: ft_.keyword,
             fn_.views: ft_.text,
             fn_.likes: ft_.text,
-            fn_.posted: ft_.text,
+            fn_.posted: ft_.date,
             fn_.comment_count: ft_.text,
         }
     },
@@ -85,7 +87,8 @@ houzz_schema = {
             fn_.link: ft_.text,
             fn_.tags: ft_.keyword,
             fn_.related_tags: ft_.keyword,
-            fn_.posted: ft_.text,
+            fn_.posted: ft_.date,
+            fn_.images: ft_.text
         }
     },
 }

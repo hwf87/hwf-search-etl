@@ -71,7 +71,7 @@ class NewsExtractor(ExtractorBase):
             fn_.uid: metadata["id"],
             fn_.channel: metadata["snippet"].get("channelTitle", ""),
             fn_.tags: metadata["snippet"].get("tags", []),
-            fn_.posted: metadata["snippet"].get("publishedAt", ""),
+            fn_.posted: metadata["snippet"].get("publishedAt", "")[:10],
             fn_.link: url_,
             fn_.title: metadata["snippet"].get("title", ""),
             fn_.details: metadata["snippet"].get("description", ""),

@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import sys
-from typing import List
+from typing import List, Dict
 
 sys.path.append("../..")
 from bs4 import BeautifulSoup
@@ -45,7 +45,7 @@ class HouzzExtractor(ExtractorBase):
 
         # start multi-thread to parse story detail from each single story page
         story_url_list = [
-            url for url in set(self.story_list) if "https://" in url
+            url_dict for url_dict in self.story_list if "https://" in list(url_dict.keys())[0]
         ]
         self.multi_thread_process(
             all_url_list=story_url_list,
@@ -98,6 +98,19 @@ class HouzzExtractor(ExtractorBase):
             logger.warning(e)
             link = ""
         return link
+    
+    def get_story_image_from_page(self, story: BeautifulSoup) -> str:
+        """ """
+        try:
+            image = story.find(
+                "img",
+                class_="gallery-image__responsive",
+            )["src"]
+            image = image.replace(" ", "")
+        except Exception as e:
+            logger.warning(e)
+            image = ""
+        return image
 
     def get_stories_from_page(self, url: str) -> None:
         """
@@ -109,7 +122,7 @@ class HouzzExtractor(ExtractorBase):
             "div", class_="gallery-card hz-browse-galleries-list__gallery"
         )
         story_list_tmp = [
-            self.get_story_link_from_page(story) for story in stories
+            {self.get_story_link_from_page(story): {"images": self.get_story_image_from_page(story)}} for story in stories
         ]
         self.story_list += story_list_tmp
 
@@ -124,6 +137,7 @@ class HouzzExtractor(ExtractorBase):
             else:
                 day, month, year = posted.split(" ")[1].replace(",", ""), posted.split(" ")[0], posted.split(" ")[2]
                 month = month_map.get(month[:3], "")
+                day = f"0{day}" if len(day) == 1 else day
                 posted = f"{year}-{month}-{day}"
         except Exception as e:
             logger.warning(e)
@@ -207,19 +221,22 @@ class HouzzExtractor(ExtractorBase):
         return story_id
 
     @log(logger)
-    def get_detail_form_story_page(self, url: str) -> None:
+    def get_detail_form_story_page(self, url: Dict[str, Dict]) -> None:
         """ """
         logger.info(f"Job Waiting in Queue: {self.jobs.qsize()}")
-        soup = self.bs4_parser(url=url)
+        link = list(url.keys())[0]
+        images = url[link]["images"]
+        soup = self.bs4_parser(url=link)
         story_detail = {
-            fn_.uid: self.get_unique_story_id(url=url),
+            fn_.uid: self.get_unique_story_id(url=link),
             fn_.title: self.get_story_meta_title(story=soup),
             fn_.description: self.get_story_meta_description(story=soup),
             fn_.author: self.get_story_meta_author(story=soup),
-            fn_.link: url,
+            fn_.link: link,
             fn_.details: self.get_story_meta_main_content(story=soup),
             fn_.tags: self.get_story_meta_tags(story=soup),
             fn_.related_tags: self.get_story_meta_related_tags(story=soup),
             fn_.posted: self.get_story_meta_posted(story=soup),
+            fn_.images: images
         }
         self.story_detail_list.append(story_detail)

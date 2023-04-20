@@ -67,11 +67,11 @@ class ExtractorBase(ABC):
 
     @log(logger)
     def multi_thread_process(
-        self, all_url_list: list, process_func: Callable, thread_num: int = 10
+        self, all_url_list: List[Any], process_func: Callable, thread_num: int = 10
     ):
         """ """
-        for page_url in all_url_list:
-            self.jobs.put(page_url)
+        for url_object in all_url_list:
+            self.jobs.put(url_object)
         for thread_idx in range(0, thread_num):
             logger.info(f"Start Thraed NO.: {thread_idx+1}")
             worker = threading.Thread(
@@ -88,8 +88,8 @@ class ExtractorBase(ABC):
     def consume_jobs(self, job_queue: Queue, func: Callable) -> None:
         """ """
         while not job_queue.empty():
-            url = job_queue.get()
-            func(url=url)
+            url_object = job_queue.get()
+            func(url=url_object)
             job_queue.task_done()
 
 
@@ -161,6 +161,7 @@ class LoaderBase(ABC):
             max_chunk_bytes=104857600,
             max_retries=3,
             yield_ok=True,
+            raise_on_error=False,
             ignore_status=(),
         ):
             batches.append(meta)

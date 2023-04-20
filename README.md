@@ -7,7 +7,7 @@ This is a data scraping project that sources data from the Houzz e-commerce plat
 [[Data Engineering] Build a web crawling ETL pipeline with Apache Beam + Elasticsearch + Kibana](https://jackyfu1995.medium.com)
 
 ## Architecture Overview
-![plot](./images/app_arch.png)
+![plot](./docs/app_arch.png)
 
 ## How to Start
 1. git clone https://github.com/hwf87/hwf-search-etl.git
@@ -76,17 +76,18 @@ GET houzz/_count
 GET cnn/_count
 GET tedtalk/_count
 ```
-![plot](./images/check_kibana.png)
+![plot](./docs/check_kibana.png)
 
 9. Create your own dashboard with Kibana
 - Create Index Pattern
 - Go to Analytics >> Dashboard
 
 ## Pipeline Design Pattern
-![plot](./images/pipeline_design.png)
+![plot](./docs/pipeline_design.png)
 
 ## How to run without docker for Debuging
 1. Set environment variaables
+> Remember to change ES_HOST=http://localhost:9200 in .env file
 ```
 set -a
 source .env
