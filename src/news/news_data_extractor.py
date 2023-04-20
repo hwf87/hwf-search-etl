@@ -23,7 +23,9 @@ class NewsExtractor(ExtractorBase):
         part = "contentDetails"
         url = f"{youtube_api_base_url}/channels?part={part}&forUsername={channel_username}&key={youtube_api_key}"
         result = requests.get(url).json()
-        playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        playlist_id = result["items"][0]["contentDetails"]["relatedPlaylists"][
+            "uploads"
+        ]
 
         return playlist_id
 
@@ -53,7 +55,7 @@ class NewsExtractor(ExtractorBase):
             video_id_list += video_id_tmp
 
             # Log status
-            total_page = int(math.ceil(int(totalResults)/int(results_per_page)))
+            total_page = int(math.ceil(int(totalResults) / int(results_per_page)))
             logger.info(f"Total Pages: {total_page}, YouTube Page No.: {idx}")
             idx += 1
             if pages is None:
@@ -71,7 +73,7 @@ class NewsExtractor(ExtractorBase):
             fn_.uid: metadata["id"],
             fn_.channel: metadata["snippet"].get("channelTitle", ""),
             fn_.tags: metadata["snippet"].get("tags", []),
-            fn_.posted: metadata["snippet"].get("publishedAt", ""),
+            fn_.posted: metadata["snippet"].get("publishedAt", "")[:10],
             fn_.link: url_,
             fn_.title: metadata["snippet"].get("title", ""),
             fn_.details: metadata["snippet"].get("description", ""),
@@ -92,9 +94,7 @@ class NewsExtractor(ExtractorBase):
         result = requests.get(url).json()
 
         meta_list = result["items"]
-        infos = [
-            self.parse_video_metadata(metadata) for metadata in meta_list
-        ]
+        infos = [self.parse_video_metadata(metadata) for metadata in meta_list]
 
         return infos
 
@@ -109,13 +109,11 @@ class NewsExtractor(ExtractorBase):
 
         # get video id list
         totalResults, nextPageToken, video_id_list = self.get_video_id_list(
-            playlist_id=playlist_id, 
+            playlist_id=playlist_id,
             results_per_page="50"
             # , pages=5
         )
-        logger.info(
-            f"totalResults: {totalResults}, nextPageToken: {nextPageToken}"
-        )
+        logger.info(f"totalResults: {totalResults}, nextPageToken: {nextPageToken}")
 
         # get videos info
         video_id_list = self.chunks(video_id_list, 50)

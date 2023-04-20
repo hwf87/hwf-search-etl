@@ -54,24 +54,24 @@ class ExtractorBase(ABC):
     def date_converter(self, input: str) -> str:
         """ """
         if input == "yesterday":
-            date_result = date.today() - timedelta(days = 1)
+            date_result = date.today() - timedelta(days=1)
         elif "days ago" in input:
             days_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(days = days_ago)
+            date_result = date.today() - timedelta(days=days_ago)
         elif "hours ago" in input or "hour ago" in input:
             hours_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(hours = hours_ago)
+            date_result = date.today() - timedelta(hours=hours_ago)
         else:
             date_result = date.today()
         return date_result
 
     @log(logger)
     def multi_thread_process(
-        self, all_url_list: list, process_func: Callable, thread_num: int = 10
+        self, all_url_list: List[Any], process_func: Callable, thread_num: int = 10
     ):
         """ """
-        for page_url in all_url_list:
-            self.jobs.put(page_url)
+        for url_object in all_url_list:
+            self.jobs.put(url_object)
         for thread_idx in range(0, thread_num):
             logger.info(f"Start Thraed NO.: {thread_idx+1}")
             worker = threading.Thread(
@@ -88,8 +88,8 @@ class ExtractorBase(ABC):
     def consume_jobs(self, job_queue: Queue, func: Callable) -> None:
         """ """
         while not job_queue.empty():
-            url = job_queue.get()
-            func(url=url)
+            url_object = job_queue.get()
+            func(url=url_object)
             job_queue.task_done()
 
 
@@ -142,9 +142,7 @@ class LoaderBase(ABC):
 
     @log(logger)
     @retry(tries=5, delay=3, backoff=2, max_delay=60)
-    def create_index(
-        self, index_name: str, body: dict, es: Elasticsearch
-    ) -> None:
+    def create_index(self, index_name: str, body: dict, es: Elasticsearch) -> None:
         """ """
         res = es.indices.create(index=index_name, body=body)
         status_code = res.meta.status
@@ -161,6 +159,7 @@ class LoaderBase(ABC):
             max_chunk_bytes=104857600,
             max_retries=3,
             yield_ok=True,
+            raise_on_error=False,
             ignore_status=(),
         ):
             batches.append(meta)

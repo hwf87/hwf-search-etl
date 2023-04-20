@@ -10,7 +10,7 @@ logger = get_logger(name=__name__)
 class_objects = InitObject(class_config_path="./config/class_object.yaml")
 
 
-class PreProcessor():
+class PreProcessor:
     def __init__(self):
         """ """
         pass
@@ -24,7 +24,7 @@ class PreProcessor():
         return [wrapper]
 
 
-class InferenceProcessor():
+class InferenceProcessor:
     def __init__(self):
         """ """
         pass
@@ -39,7 +39,7 @@ class InferenceProcessor():
         return [wrapper]
 
 
-class PostProcessor():
+class PostProcessor:
     def __init__(self):
         """ """
         pass
