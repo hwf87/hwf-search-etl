@@ -23,9 +23,7 @@ class NewsLoader(LoaderBase):
     def load(self, documents: List[dict]) -> None:
         """ """
         es = self.get_es_client()
-        index_exist = self.check_index(
-            index_name=elasticsearch_index_name_news, es=es
-        )
+        index_exist = self.check_index(index_name=elasticsearch_index_name_news, es=es)
         if not index_exist:
             self.create_index(
                 index_name=elasticsearch_index_name_news,

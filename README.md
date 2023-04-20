@@ -7,7 +7,7 @@ This is a data scraping project that sources data from the Houzz e-commerce plat
 [[Data Engineering] Build a web crawling ETL pipeline with Apache Beam + Elasticsearch + Kibana](https://jackyfu1995.medium.com)
 
 ## Architecture Overview
-![plot](./images/app_arch.png)
+![plot](./docs/app_arch.png)
 
 ## How to Start
 1. git clone https://github.com/hwf87/hwf-search-etl.git
@@ -15,7 +15,7 @@ This is a data scraping project that sources data from the Houzz e-commerce plat
 2. Create a .env file with following configs
 > Note that YOUTUBE_API_KEY you can easily create one for yourself from [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com).
 
-> ES HOST, USERNAME, PASSWORD can also be modified, but you'll need to do the corresponding work on docker-compose-elk.yaml 
+> ES HOST, USERNAME, PASSWORD can also be modified, but you'll need to do the corresponding work on docker-compose-elk.yaml
 ```
 YOUTUBE_API_KEY={CREATE-ONE-FOR-YOUSELF}
 ES_HOST=http://es-container:9200
@@ -23,7 +23,7 @@ ES_USERNAME=elastic
 ES_PASSWORD=elastic
 ```
 
-3. Create a virtual environment for testing 
+3. Create a virtual environment for testing
 ```
 conda create -n search_engine python=3.8
 conda activate search_engine
@@ -46,7 +46,7 @@ python ./model/download_pretrain_model.py
 
 > check elk_elastic network exists by 'docker network ls'
 ```
-cd ./elk 
+cd ./elk
 docker-compose -f docker-compose-elk.yaml up -d
 docker ps
 docker network ls
@@ -76,17 +76,18 @@ GET houzz/_count
 GET cnn/_count
 GET tedtalk/_count
 ```
-![plot](./images/check_kibana.png)
+![plot](./docs/check_kibana.png)
 
 9. Create your own dashboard with Kibana
 - Create Index Pattern
 - Go to Analytics >> Dashboard
 
 ## Pipeline Design Pattern
-![plot](./images/pipeline_design.png)
+![plot](./docs/pipeline_design.png)
 
 ## How to run without docker for Debuging
 1. Set environment variaables
+> Remember to change ES_HOST=http://localhost:9200 in .env file
 ```
 set -a
 source .env
