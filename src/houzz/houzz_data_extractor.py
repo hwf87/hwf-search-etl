@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import sys
 from typing import List, Dict
 
@@ -25,15 +23,11 @@ class HouzzExtractor(ExtractorBase):
         """
         # get total story count
         start_page = 0
-        story_count = self.get_story_count(
-            url=houzz_story_base_url + str(start_page)
-        )
+        story_count = self.get_story_count(url=houzz_story_base_url + str(start_page))
 
         # list done all url pages
         page_url_list = self.get_page_url_list(
-            story_count=story_count, 
-            start_page=start_page
-            , end_page=500
+            story_count=story_count, start_page=start_page, end_page=500
         )
 
         # start multi-thread to prase story url from each single collect page
@@ -45,7 +39,9 @@ class HouzzExtractor(ExtractorBase):
 
         # start multi-thread to parse story detail from each single story page
         story_url_list = [
-            url_dict for url_dict in self.story_list if "https://" in list(url_dict.keys())[0]
+            url_dict
+            for url_dict in self.story_list
+            if "https://" in list(url_dict.keys())[0]
         ]
         self.multi_thread_process(
             all_url_list=story_url_list,
@@ -59,9 +55,7 @@ class HouzzExtractor(ExtractorBase):
     def get_story_count(self, url: str) -> int:
         """ """
         soup = self.bs4_parser(url=url)
-        count = soup.find(
-            "span", class_="hz-browse-galleries__header-story-count"
-        ).text
+        count = soup.find("span", class_="hz-browse-galleries__header-story-count").text
         count = int(count.split(" ")[0])
 
         return count
@@ -98,7 +92,7 @@ class HouzzExtractor(ExtractorBase):
             logger.warning(e)
             link = ""
         return link
-    
+
     def get_story_image_from_page(self, story: BeautifulSoup) -> str:
         """ """
         try:
@@ -122,7 +116,12 @@ class HouzzExtractor(ExtractorBase):
             "div", class_="gallery-card hz-browse-galleries-list__gallery"
         )
         story_list_tmp = [
-            {self.get_story_link_from_page(story): {"images": self.get_story_image_from_page(story)}} for story in stories
+            {
+                self.get_story_link_from_page(story): {
+                    "images": self.get_story_image_from_page(story)
+                }
+            }
+            for story in stories
         ]
         self.story_list += story_list_tmp
 
@@ -135,7 +134,11 @@ class HouzzExtractor(ExtractorBase):
             if "ago" in posted or "yesterday" in posted:
                 posted = self.date_converter(input=posted)
             else:
-                day, month, year = posted.split(" ")[1].replace(",", ""), posted.split(" ")[0], posted.split(" ")[2]
+                day, month, year = (
+                    posted.split(" ")[1].replace(",", ""),
+                    posted.split(" ")[0],
+                    posted.split(" ")[2],
+                )
                 month = month_map.get(month[:3], "")
                 day = f"0{day}" if len(day) == 1 else day
                 posted = f"{year}-{month}-{day}"
@@ -196,9 +199,7 @@ class HouzzExtractor(ExtractorBase):
     def get_story_meta_description(self, story: BeautifulSoup) -> str:
         """ """
         try:
-            description = story.find(
-                "h2", class_="hz-editorial-gallery__subtitle"
-            ).text
+            description = story.find("h2", class_="hz-editorial-gallery__subtitle").text
         except Exception as e:
             logger.warning(e)
             description = ""
@@ -207,9 +208,7 @@ class HouzzExtractor(ExtractorBase):
     def get_story_meta_title(self, story: BeautifulSoup) -> str:
         """ """
         try:
-            title = story.find(
-                "h1", class_="hz-editorial-gallery__title"
-            ).text
+            title = story.find("h1", class_="hz-editorial-gallery__title").text
         except Exception as e:
             logger.warning(e)
             title = ""
@@ -237,6 +236,6 @@ class HouzzExtractor(ExtractorBase):
             fn_.tags: self.get_story_meta_tags(story=soup),
             fn_.related_tags: self.get_story_meta_related_tags(story=soup),
             fn_.posted: self.get_story_meta_posted(story=soup),
-            fn_.images: images
+            fn_.images: images,
         }
         self.story_detail_list.append(story_detail)
