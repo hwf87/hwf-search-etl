@@ -23,7 +23,7 @@ jobs:
           ES_USERNAME: ${{ secrets.ES_USERNAME }}
           ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
           ES_HOST: ${{ env.ES_HOST }}
-      # - name: Pre-Commit
-      #   run: |
-      #     pre-commit install --install-hooks
-      #  pre-commit run --all-files
+      - name: Pre-Commit
+        run: |
+          pre-commit install --install-hooks
+          pre-commit run --all-files
