@@ -54,13 +54,13 @@ class ExtractorBase(ABC):
     def date_converter(self, input: str) -> str:
         """ """
         if input == "yesterday":
-            date_result = date.today() - timedelta(days = 1)
+            date_result = date.today() - timedelta(days=1)
         elif "days ago" in input:
             days_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(days = days_ago)
+            date_result = date.today() - timedelta(days=days_ago)
         elif "hours ago" in input or "hour ago" in input:
             hours_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(hours = hours_ago)
+            date_result = date.today() - timedelta(hours=hours_ago)
         else:
             date_result = date.today()
         return date_result
@@ -142,9 +142,7 @@ class LoaderBase(ABC):
 
     @log(logger)
     @retry(tries=5, delay=3, backoff=2, max_delay=60)
-    def create_index(
-        self, index_name: str, body: dict, es: Elasticsearch
-    ) -> None:
+    def create_index(self, index_name: str, body: dict, es: Elasticsearch) -> None:
         """ """
         res = es.indices.create(index=index_name, body=body)
         status_code = res.meta.status

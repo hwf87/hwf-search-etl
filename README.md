@@ -15,7 +15,7 @@ This is a data scraping project that sources data from the Houzz e-commerce plat
 2. Create a .env file with following configs
 > Note that YOUTUBE_API_KEY you can easily create one for yourself from [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com).
 
-> ES HOST, USERNAME, PASSWORD can also be modified, but you'll need to do the corresponding work on docker-compose-elk.yaml 
+> ES HOST, USERNAME, PASSWORD can also be modified, but you'll need to do the corresponding work on docker-compose-elk.yaml
 ```
 YOUTUBE_API_KEY={CREATE-ONE-FOR-YOUSELF}
 ES_HOST=http://es-container:9200
@@ -23,7 +23,7 @@ ES_USERNAME=elastic
 ES_PASSWORD=elastic
 ```
 
-3. Create a virtual environment for testing 
+3. Create a virtual environment for testing
 ```
 conda create -n search_engine python=3.8
 conda activate search_engine
@@ -46,7 +46,7 @@ python ./model/download_pretrain_model.py
 
 > check elk_elastic network exists by 'docker network ls'
 ```
-cd ./elk 
+cd ./elk
 docker-compose -f docker-compose-elk.yaml up -d
 docker ps
 docker network ls

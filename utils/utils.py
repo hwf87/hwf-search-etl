@@ -18,6 +18,7 @@ def get_logger(name: str) -> logging:
 
 def log(logger: str) -> Callable:
     """ """
+
     def exception_handler(func: Callable):
         def inner_function(*args, **kwargs):
             filename = os.path.basename(func.__code__.co_filename)
@@ -28,5 +29,7 @@ def log(logger: str) -> Callable:
                 logger.error(
                     f"[ERROR]==> File: {filename} | Function: {func.__name__} | MSG: {e}"
                 )
+
         return inner_function
+
     return exception_handler

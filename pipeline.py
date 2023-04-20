@@ -29,7 +29,7 @@ def beam_runner(data_source: str) -> None:
             | "Inference" >> beam.ParDo(beam_inference_processor)
             | "Post-Process" >> beam.ParDo(beam_post_processor)
         )
-    logger.info(f"====BEAM RUNNER DONE====")
+    logger.info("====BEAM RUNNER DONE====")
 
 
 @log(logger)
@@ -41,7 +41,7 @@ def local_runner(data_source: str) -> None:
     pipe = pre_processor.process(source=data_source)
     pipe = inference_processor.process(element=pipe[0])
     post_processor.process(element=pipe[0])
-    logger.info(f"====LOCAL RUNNER DONE====")
+    logger.info("====LOCAL RUNNER DONE====")
 
 
 if __name__ == "__main__":

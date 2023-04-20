@@ -88,7 +88,7 @@ houzz_schema = {
             fn_.tags: ft_.keyword,
             fn_.related_tags: ft_.keyword,
             fn_.posted: ft_.date,
-            fn_.images: ft_.text
+            fn_.images: ft_.text,
         }
     },
 }

@@ -2,7 +2,7 @@ name: Unit Test
 run-name: ${{ github.actor }} is running Unit Test on GitHub Actions 🚀
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  CI-Flow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,3 +23,7 @@ jobs:
           ES_USERNAME: ${{ secrets.ES_USERNAME }}
           ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
           ES_HOST: ${{ env.ES_HOST }}
+      # - name: Pre-Commit
+      #   run: |
+      #     pre-commit install --install-hooks
+      #  pre-commit run --all-files

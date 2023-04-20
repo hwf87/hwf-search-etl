@@ -38,12 +38,12 @@ class TedtalkExtractor(ExtractorBase):
         TO-DO: transcript, duration, likes, language
         """
         soup = self.bs4_parser(talk_url)
-        details = self.parse_extra_info_details(soup = soup)
-        tags = self.parse_extra_info_tags(soup = soup)
-        views = self.parse_extra_info_views(soup = soup)
+        details = self.parse_extra_info_details(soup=soup)
+        tags = self.parse_extra_info_tags(soup=soup)
+        views = self.parse_extra_info_views(soup=soup)
 
         return details, tags, views
-    
+
     def parse_extra_info_details(self, soup: BeautifulSoup) -> str:
         """ """
         try:
@@ -52,7 +52,7 @@ class TedtalkExtractor(ExtractorBase):
             logger.warning(e)
             details = ""
         return details
-    
+
     def parse_extra_info_tags(self, soup: BeautifulSoup) -> List[str]:
         """ """
         try:
@@ -64,7 +64,7 @@ class TedtalkExtractor(ExtractorBase):
             logger.warning(e)
             tags = []
         return tags
-    
+
     def parse_extra_info_views(self, soup: BeautifulSoup) -> str:
         """ """
         try:
@@ -85,10 +85,10 @@ class TedtalkExtractor(ExtractorBase):
         """
         parse basic in for given talks raw meta
         """
-        author = self.parse_basic_info_author(talk = talk)
-        title = self.parse_basic_info_title(talk = talk)
-        link = self.parse_basic_info_link(talk = talk)
-        posted = self.parse_basic_info_posted(talk = talk)
+        author = self.parse_basic_info_author(talk=talk)
+        title = self.parse_basic_info_title(talk=talk)
+        link = self.parse_basic_info_link(talk=talk)
+        posted = self.parse_basic_info_posted(talk=talk)
         details, tags, views = self.parse_extra_info(talk_url=link)
         uid = link.split("/")[-1].split("?")[0]
         result = {
@@ -103,7 +103,7 @@ class TedtalkExtractor(ExtractorBase):
         }
 
         return result
-    
+
     def parse_basic_info_author(self, talk: BeautifulSoup) -> str:
         """ """
         try:
@@ -112,7 +112,7 @@ class TedtalkExtractor(ExtractorBase):
             logger.warning(e)
             author = ""
         return author
-    
+
     def parse_basic_info_title(self, talk: BeautifulSoup) -> str:
         """ """
         try:
@@ -121,7 +121,7 @@ class TedtalkExtractor(ExtractorBase):
             logger.warning(e)
             title = ""
         return title
-    
+
     def parse_basic_info_link(self, talk: BeautifulSoup) -> str:
         """ """
         try:
@@ -130,7 +130,7 @@ class TedtalkExtractor(ExtractorBase):
             logger.warning(e)
             link = ""
         return link
-    
+
     def parse_basic_info_posted(self, talk: BeautifulSoup) -> str:
         """ """
         try:
@@ -168,8 +168,7 @@ class TedtalkExtractor(ExtractorBase):
 
         # create page url list
         page_url_list = [
-            f"{url}&page={str(current_page)}"
-            for current_page in range(1, pages + 1)
+            f"{url}&page={str(current_page)}" for current_page in range(1, pages + 1)
         ]
 
         # multi thread process to parse tedtalk metadata
