@@ -32,10 +32,21 @@ jobs:
           pre-commit run --all-files
       - name: Build image
         run: |
-          docker build --tag search-etl -f Pipeline.Dockerfile .
+          docker build --platform linux/amd64 --tag search-etl -f Pipeline.Dockerfile .
       - name: Save image to github artifact
         uses: actions/upload-artifact@v2
         with:
           name: search-etl
           path: |
             search-etl
+
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: myimage
+          path: myimage
