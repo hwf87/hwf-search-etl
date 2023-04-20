@@ -1,4 +1,4 @@
-name: Unit Test
+name: CI/CD PIPELINE
 run-name: ${{ github.actor }} is running Unit Test on GitHub Actions 🚀
 on: [push]
 jobs:
@@ -30,3 +30,12 @@ jobs:
         run: |
           pre-commit install --install-hooks
           pre-commit run --all-files
+      - name: Build image
+        run: |
+          docker build --tag search-etl -f Pipeline.Dockerfile .
+      - name: Save image to github artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: search-etl
+          path: |
+            search-etl
