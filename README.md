@@ -30,9 +30,11 @@ conda activate search_engine
 ```
 
 4. Download SentenceTransformer pretrain model from HuggingFace
-> You'll be able to find sentence_embedding_model.pth file in model folder after execute following commands
-> If you are using M1 MacOS, and facing issue "Library not loaded: @rpath/libopenblas.0.dylib"
-> Try ```conda install openblas``` before you run below
+> You'll be able to find sentence_embedding_model.pth file in model folder after execute following commands.
+
+> If you are using M1 MacOS, and facing issue "Library not loaded: @rpath/libopenblas.0.dylib".
+
+> Try ```conda install openblas``` before you run below.
 ```
 cd ./hwf-search-etl
 pip install -r requirements.txt
@@ -107,12 +109,43 @@ bash unit_test.sh
 ```
 
 ## Precommit
-- Black
-- Flake8
+- Black config: find ```pyproject.toml```
+- Flake8 config: find ```tox.ini```
 ```
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black
+        name: black
+-   repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
 ```
 
 ## CI/CD
 - Githun Actions
+- Find ```github-actions.yml```
 ```
+[JOB 1] Build
+- steps
+    - Set up Python
+    - Install dependencies
+    - Test with pytest
+    - Pre-Commit Check
+    - Build images
+    - Push to github artifactory
+[JOB 2] Deploy
+- steps
+    - Download images from github artifactory
+    - Push to github packages
+    - Service Deployment
 ```
