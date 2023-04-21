@@ -2,7 +2,7 @@ import sys
 import pytest
 
 sys.path.append("..")
-# from src.houzz.houzz_data_transformer import HouzzTransformer
+from src.houzz.houzz_data_transformer import HouzzTransformer
 from src.news.news_data_transformer import NewsTransformer
 from src.tedtalk.tedtalk_data_transformer import TedtalkTransformer
 
@@ -10,6 +10,7 @@ from src.tedtalk.tedtalk_data_transformer import TedtalkTransformer
 class Test_HouzzTransformer:
     def test_transform(self):
         """ """
+        HouzzTransformer()
         assert 1 == 1
 
     def test_inference(self):

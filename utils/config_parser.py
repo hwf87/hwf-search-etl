@@ -26,7 +26,7 @@ class FieldName:
 
 class FieldType:
     def __init__(self) -> None:
-        self.alias = {"hwf_1": {}}
+        self.alias = {"hwf": {}}
         self.date = {"type": "date"}
         self.text = {"type": "text"}
         self.keyword = {"type": "keyword"}
