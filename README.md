@@ -31,6 +31,8 @@ conda activate search_engine
 
 4. Download SentenceTransformer pretrain model from HuggingFace
 > You'll be able to find sentence_embedding_model.pth file in model folder after execute following commands
+> If you are using M1 MacOS, and facing issue "Library not loaded: @rpath/libopenblas.0.dylib"
+> Try ```conda install openblas``` before you run below
 ```
 cd ./hwf-search-etl
 pip install -r requirements.txt
