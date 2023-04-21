@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import sys
 import time
 from tqdm import tqdm
