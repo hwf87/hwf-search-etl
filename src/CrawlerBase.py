@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import requests
 import threading
 from queue import Queue
@@ -53,16 +51,20 @@ class ExtractorBase(ABC):
     @log(logger)
     def date_converter(self, input: str) -> str:
         """ """
-        if input == "yesterday":
-            date_result = date.today() - timedelta(days=1)
-        elif "days ago" in input:
-            days_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(days=days_ago)
-        elif "hours ago" in input or "hour ago" in input:
-            hours_ago = int(input.split(" ")[0])
-            date_result = date.today() - timedelta(hours=hours_ago)
-        else:
-            date_result = date.today()
+        try:
+            if input == "yesterday":
+                date_result = str(date.today() - timedelta(days=1))
+            elif "days ago" in input:
+                days_ago = int(input.split(" ")[0])
+                date_result = str(date.today() - timedelta(days=days_ago))
+            elif "hours ago" in input or "hour ago" in input:
+                hours_ago = int(input.split(" ")[0])
+                date_result = str(date.today() - timedelta(hours=hours_ago))
+            else:
+                date_result = str(date.today())
+        except Exception as e:
+            logger.warning(e)
+            date_result = str(date.today())
         return date_result
 
     @log(logger)

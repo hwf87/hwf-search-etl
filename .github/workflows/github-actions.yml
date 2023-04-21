@@ -1,8 +1,8 @@
-name: Unit Test
-run-name: ${{ github.actor }} is running Unit Test on GitHub Actions 🚀
+name: CI/CD PIPELINE
+run-name: ${{ github.actor }} is running CI/CD on GitHub Actions 🚀
 on: [push]
 jobs:
-  CI-Flow:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,6 +14,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Download Pretrain Model
+        run: |
+          python ./model/download_pretrain_model.py
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
@@ -23,7 +26,29 @@ jobs:
           ES_USERNAME: ${{ secrets.ES_USERNAME }}
           ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
           ES_HOST: ${{ env.ES_HOST }}
-      - name: Pre-Commit
+      - name: Pre-Commit Check
         run: |
           pre-commit install --install-hooks
           pre-commit run --all-files
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+  #     - name: Build image
+  #       run: |
+  #         docker buildx build --platform=linux/arm64/v8 --tag search-etl --output search-etl.tar -f Pipeline.Dockerfile .
+  #     - name: Upload Docker image to github artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: docker-image
+  #         path: search-etl.tar
+  #         retention-days: 1
+
+  # Deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: Build
+  #   steps:
+  #     - name: Download Docker image
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: docker-image
+  #     - name: Load Docker image
+  #       run: docker load --input search-etl.tar

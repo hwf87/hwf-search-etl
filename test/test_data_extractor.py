@@ -13,10 +13,14 @@ class Test_HouzzExtractor:
         HouzzExtractor()
         assert 1 == 1
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_count(self):
+    @pytest.mark.parametrize(
+        "url, expect", [("https://www.houzz.com/ideabooks/p/0", 1000)]
+    )
+    def test_get_story_count(self, url, expect):
         """ """
-        HouzzExtractor()
+        HE = HouzzExtractor()
+        answer = HE.get_story_count(url)
+        assert answer >= expect
 
     @pytest.mark.parametrize("", [])
     def test_get_page_url_list(self):
