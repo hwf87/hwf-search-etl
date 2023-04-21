@@ -34,10 +34,10 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build image
         run: |
-          docker buildx build --platform=linux/arm64/v8 --tag search-etl -f Pipeline.Dockerfile .
+          docker buildx build --platform=linux/arm64/v8 --tag search-etl --output search-etl.tar -f Pipeline.Dockerfile .
 
-      - name: Save Docker image
-        run: docker save --output search-etl.tar "search-etl"
+      # - name: Save Docker image
+      #   run: docker save --output search-etl.tar "search-etl"
       - name: Upload Docker image to github artifact
         uses: actions/upload-artifact@v2
         with:
