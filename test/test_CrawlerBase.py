@@ -1,5 +1,7 @@
 import sys
 import pytest
+from typing import Any, List
+from datetime import date
 
 sys.path.append("..")
 from src.CrawlerBase import ExtractorBase, TransformerBase, LoaderBase
@@ -45,32 +47,94 @@ class Test_ExtractorBase:
         answer = soup.head.title.text
         assert expect in answer
 
-    @pytest.mark.parametrize("", [])
-    def test_chunks(self):
+    @pytest.mark.parametrize(
+        "lst, num, expect",
+        [
+            (["a", "b", "c"], 1, [["a"], ["b"], ["c"]]),
+            ([1, 2, 3, 4, 5, 6], 3, [[1, 2, 3], [4, 5, 6]]),
+            ([1, 2, 3], 2, [[1, 2], [3]]),
+            ([1, 2, 3, 4, 5], 10, [[1, 2, 3, 4, 5]]),
+        ],
+    )
+    def test_chunks(self, lst: List[Any], num: int, expect: List[List[Any]]):
         """ """
-        ExtractorBaseConcrete()
+        EBC = ExtractorBaseConcrete()
+        answer = EBC.chunks(lst, num)
+        answer = [ans for ans in answer]
 
-    @pytest.mark.parametrize("", [])
-    def test_date_converter(self):
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "input, expect",
+        [
+            ("5 days ago", 5),
+            ("yesterday", 1),
+            ("2 hours ago", 0),
+            ("1 hour ago", 0),
+            ("ABC", 0),
+        ],
+    )
+    def test_date_converter(self, input: str, expect: str):
         """ """
-        ExtractorBaseConcrete()
+        EBC = ExtractorBaseConcrete()
+        date_result = EBC.date_converter(input)
+        result = date(
+            int(date_result[0:4]), int(date_result[5:7]), int(date_result[8:10])
+        )
+        delta = date.today() - result
+        answer = delta.days
+
+        assert len(date_result) == 10
+        assert answer == expect
 
     @pytest.mark.parametrize("", [])
     def test_multi_thread_process(self):
         """ """
         ExtractorBaseConcrete()
 
-    @pytest.mark.parametrize("", [])
-    def test_consume_jobs(self):
+    @pytest.mark.parametrize(
+        "queue_items, expect",
+        [
+            (["https://abc.com", "https://google.com"], ["abc.com", "google.com"]),
+        ],
+    )
+    def test_consume_jobs(self, queue_items: List[Any], expect: bool):
         """ """
-        ExtractorBaseConcrete()
+        EBC = ExtractorBaseConcrete()
+        # add to queue
+        for q in queue_items:
+            EBC.jobs.put(q)
+        # temp array and function
+        EBC.temp = []
+
+        def push_back_remove_https(url: str):
+            url = url.replace("https://", "")
+            EBC.temp.append(url)
+
+        # execute
+        EBC.consume_jobs(job_queue=EBC.jobs, func=push_back_remove_https)
+        answer = EBC.temp
+
+        assert answer == expect
 
 
 class Test_TransformerBase:
-    @pytest.mark.parametrize("", [])
-    def test_chunks(self):
+    @pytest.mark.parametrize(
+        "lst, num, expect",
+        [
+            (["a", "b", "c"], 1, [["a"], ["b"], ["c"]]),
+            ([1, 2, 3, 4, 5, 6], 3, [[1, 2, 3], [4, 5, 6]]),
+            ([1, 2, 3], 2, [[1, 2], [3]]),
+            ([1, 2, 3, 4, 5], 10, [[1, 2, 3, 4, 5]]),
+        ],
+    )
+    def test_chunks(self, lst: List[Any], num: int, expect: List[List[Any]]):
         """ """
-        TransformerBaseConcrete()
+        TBC = TransformerBaseConcrete()
+        answer = TBC.chunks(lst, num)
+        answer = [ans for ans in answer]
+
+        assert answer == expect
 
 
 class Test_LoaderBase:
