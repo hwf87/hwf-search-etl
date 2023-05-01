@@ -79,20 +79,21 @@ class Test_NewsTransformer:
         expect = read_json_data(test_data_path)
 
         # item 1
-        # answer_1_embedding = answer[0]["embeddings"]
-        # expect_1_embedding = expect[0]["embeddings"]
+        answer_1_embedding = answer[0]["embeddings"]
+        expect_1_embedding = expect[0]["embeddings"]
         answer_1_columns = list(answer[0].keys())
         expect_1_columns = list(expect[0].keys())
 
         # item 2
-        # answer_2_embedding = answer[1]["embeddings"]
-        # expect_2_embedding = expect[1]["embeddings"]
+        answer_2_embedding = answer[1]["embeddings"]
+        expect_2_embedding = expect[1]["embeddings"]
         answer_2_columns = list(answer[1].keys())
         expect_2_columns = list(expect[1].keys())
 
-        # assert answer_1_embedding == expect_1_embedding
         assert answer_1_columns == expect_1_columns
         assert answer_2_columns == expect_2_columns
+        assert answer_1_embedding == expect_1_embedding
+        assert answer_2_embedding == expect_2_embedding
 
     @pytest.mark.parametrize(
         "multi_sentence, test_data_path",
