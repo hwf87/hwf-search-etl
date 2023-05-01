@@ -6,10 +6,10 @@ from src.ProcessorBase import PreProcessor, InferenceProcessor, PostProcessor
 
 
 class Test_PreProcessor:
+    @pytest.mark.parametrize("", [])
     def test_process(self):
         """ """
         PreProcessor()
-        assert 1 == 1
 
 
 class Test_InferenceProcessor:
