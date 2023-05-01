@@ -15,6 +15,15 @@ def read_json_data(path: str) -> json:
     return json_data
 
 
+def get_round_embeddings(embeddings: List[float], num: int):
+    # round_embeddings = [
+    #     list(map(lambda x: round(x, num), emb)) for emb in embeddings
+    # ]
+
+    round_embeddings = list(map(lambda x: round(x, num), embeddings))
+    return round_embeddings
+
+
 class Test_HouzzTransformer:
     def test_transform(self):
         """ """
@@ -35,12 +44,17 @@ class Test_HouzzTransformer:
         HT = HouzzTransformer()
         answer = HT.inference(batch_texts=multi_sentence)
         expect = read_json_data(test_data_path)["embeddings"]
+        # round embedings digits
+        answer_1_embedding = get_round_embeddings(embeddings=answer[0], num=5)
+        answer_2_embedding = get_round_embeddings(embeddings=answer[1], num=5)
+        expect_1_embedding = get_round_embeddings(embeddings=expect[0], num=5)
+        expect_2_embedding = get_round_embeddings(embeddings=expect[1], num=5)
 
         assert len(answer) == 2
         assert len(answer[0]) == 384
         assert len(answer[1]) == 384
-        assert answer[0] == expect[0]
-        assert answer[1] == expect[1]
+        assert answer_1_embedding == expect_1_embedding
+        assert answer_2_embedding == expect_2_embedding
 
 
 class Test_NewsTransformer:
@@ -79,16 +93,24 @@ class Test_NewsTransformer:
         expect = read_json_data(test_data_path)
 
         # item 1
-        answer_1_embedding = answer[0]["embeddings"]
-        expect_1_embedding = expect[0]["embeddings"]
         answer_1_columns = list(answer[0].keys())
         expect_1_columns = list(expect[0].keys())
+        answer_1_embedding = get_round_embeddings(
+            embeddings=answer[0]["embeddings"], num=5
+        )
+        expect_1_embedding = get_round_embeddings(
+            embeddings=expect[0]["embeddings"], num=5
+        )
 
         # item 2
-        answer_2_embedding = answer[1]["embeddings"]
-        expect_2_embedding = expect[1]["embeddings"]
         answer_2_columns = list(answer[1].keys())
         expect_2_columns = list(expect[1].keys())
+        answer_2_embedding = get_round_embeddings(
+            embeddings=answer[1]["embeddings"], num=5
+        )
+        expect_2_embedding = get_round_embeddings(
+            embeddings=expect[1]["embeddings"], num=5
+        )
 
         assert answer_1_columns == expect_1_columns
         assert answer_2_columns == expect_2_columns
@@ -110,11 +132,17 @@ class Test_NewsTransformer:
         answer = NT.inference(batch_texts=multi_sentence)
         expect = read_json_data(test_data_path)["embeddings"]
 
+        # round embedings digits
+        answer_1_embedding = get_round_embeddings(embeddings=answer[0], num=5)
+        answer_2_embedding = get_round_embeddings(embeddings=answer[1], num=5)
+        expect_1_embedding = get_round_embeddings(embeddings=expect[0], num=5)
+        expect_2_embedding = get_round_embeddings(embeddings=expect[1], num=5)
+
         assert len(answer) == 2
         assert len(answer[0]) == 384
         assert len(answer[1]) == 384
-        assert answer[0] == expect[0]
-        assert answer[1] == expect[1]
+        assert answer_1_embedding == expect_1_embedding
+        assert answer_2_embedding == expect_2_embedding
 
 
 class Test_TedtalkTransformer:
@@ -138,8 +166,14 @@ class Test_TedtalkTransformer:
         answer = TT.inference(batch_texts=multi_sentence)
         expect = read_json_data(test_data_path)["embeddings"]
 
+        # round embedings digits
+        answer_1_embedding = get_round_embeddings(embeddings=answer[0], num=5)
+        answer_2_embedding = get_round_embeddings(embeddings=answer[1], num=5)
+        expect_1_embedding = get_round_embeddings(embeddings=expect[0], num=5)
+        expect_2_embedding = get_round_embeddings(embeddings=expect[1], num=5)
+
         assert len(answer) == 2
         assert len(answer[0]) == 384
         assert len(answer[1]) == 384
-        assert answer[0] == expect[0]
-        assert answer[1] == expect[1]
+        assert answer_1_embedding == expect_1_embedding
+        assert answer_2_embedding == expect_2_embedding

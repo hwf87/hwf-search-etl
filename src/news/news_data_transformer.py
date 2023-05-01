@@ -43,8 +43,8 @@ class NewsTransformer(TransformerBase):
         """ """
         embeddings = self.model.encode(batch_texts)
         batch_embeddings = embeddings.tolist()
-        batch_embeddings = [
-            list(map(lambda x: round(x, 10), batch)) for batch in batch_embeddings
-        ]
+        # batch_embeddings = [
+        #     list(map(lambda x: round(x, 10), batch)) for batch in batch_embeddings
+        # ]
 
         return batch_embeddings
