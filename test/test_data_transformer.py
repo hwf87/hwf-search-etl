@@ -1,5 +1,4 @@
 import sys
-import json
 import pytest
 from typing import List
 
@@ -7,17 +6,7 @@ sys.path.append("..")
 from src.houzz.houzz_data_transformer import HouzzTransformer
 from src.news.news_data_transformer import NewsTransformer
 from src.tedtalk.tedtalk_data_transformer import TedtalkTransformer
-
-
-def read_json_data(path: str) -> json:
-    f = open(path)
-    json_data = json.load(f)
-    return json_data
-
-
-def get_round_embeddings(embeddings: List[float], num: int) -> List[float]:
-    round_embeddings = list(map(lambda x: round(x, num), embeddings))
-    return round_embeddings
+from test.utils import read_json_data, get_round_embeddings
 
 
 class Test_HouzzTransformer:
