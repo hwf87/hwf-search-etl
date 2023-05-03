@@ -64,7 +64,7 @@ class Test_HouzzExtractor:
         "houzz_story_soup_path, expect",
         [
             (
-                "./test/test_data/houzz_story_soup.html",
+                "./test/test_data/houzz/houzz_story_soup.html",
                 "https://www.houzz.com/magazine/10-fresh-furniture-and-decor-trends-for-spring-stsetivw-vs~167402436",
             )
         ],
@@ -81,7 +81,7 @@ class Test_HouzzExtractor:
         "houzz_story_path, expect",
         [
             (
-                "./test/test_data/houzz_story_soup.html",
+                "./test/test_data/houzz/houzz_story_soup.html",
                 "https://st.hzcdn.com/fimgs/e2b1ef7d044aa6ad_0686-w458-h268-b0-p0--.jpg",
             )
         ],
@@ -138,56 +138,138 @@ class Test_HouzzExtractor:
 
     @pytest.mark.parametrize(
         "story_meta_path, expect",
-        [("./test/test_data/houzz_story_meta_soup.html", "2023-05-02")],
+        [("./test/test_data/houzz/houzz_story_meta_soup.html", "2023-03-23")],
     )
     def test_get_story_meta_posted(self, story_meta_path: str, expect: str):
         """ """
         HE = HouzzExtractor()
         story_meta = read_html_to_soup(story_meta_path)
-
         answer = HE.get_story_meta_posted(story_meta)
+
         assert answer == expect
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_tags(self):
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                ["Lighting", "Decorating Guides"],
+            )
+        ],
+    )
+    def test_get_story_meta_tags(self, story_meta_path: str, expect: str):
         """ """
-        HouzzExtractor()
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_tags(story_meta)
+        print(answer)
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_related_tags(self):
-        """ """
-        HouzzExtractor()
+        assert answer == expect
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_main_content(self):
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                [
+                    "Sofas",
+                    "Lighting",
+                    "Bathroom Vanity  Lighting",
+                    "Chandeliers",
+                    "Floor Lamps",
+                    "Pendant Lighting",
+                ],
+            )
+        ],
+    )
+    def test_get_story_meta_related_tags(self, story_meta_path: str, expect: str):
         """ """
-        HouzzExtractor()
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_related_tags(story_meta)
+        answer = [ans.replace("\n                    ", "") for ans in answer]
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_author(self):
-        """ """
-        HouzzExtractor()
+        assert set(answer) == set(expect)
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_description(self):
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                "No one lighting scheme will work for every room or area of your home.",
+            )
+        ],
+    )
+    def test_get_story_meta_main_content(self, story_meta_path: str, expect: str):
         """ """
-        HouzzExtractor()
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_main_content(story_meta)
+        answer = answer.replace("\n                ", " ").replace("\n", "")
 
-    @pytest.mark.parametrize("", [])
-    def test_get_story_meta_title(self):
+        assert expect in answer
+
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                "Bryan Anthony",
+            )
+        ],
+    )
+    def test_get_story_meta_author(self, story_meta_path: str, expect: str):
         """ """
-        HouzzExtractor()
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_author(story_meta)
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                "Get professional advice for lighting your kitchen, bathroom, living room, office, patio and more",
+            )
+        ],
+    )
+    def test_get_story_meta_description(self, story_meta_path: str, expect: str):
+        """ """
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_description(story_meta)
+        answer = answer.replace("              ", " ").replace("\n", "")
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "story_meta_path, expect",
+        [
+            (
+                "./test/test_data/houzz/houzz_story_meta_soup.html",
+                "Pro Tips for Lighting 10 Rooms and Outdoor Areas",
+            )
+        ],
+    )
+    def test_get_story_meta_title(self, story_meta_path: str, expect: str):
+        """ """
+        HE = HouzzExtractor()
+        story_meta = read_html_to_soup(story_meta_path)
+        answer = HE.get_story_meta_title(story_meta)
+        assert answer == expect
 
     @pytest.mark.parametrize(
         "url_dict, expect_story_path",
         [
             (
                 {
-                    "https://www.houzz.com/magazine/bathroom-of-the-week-warm-modern-style-in-a-midcentury-ranch-stsetivw-vs~166624763": {
-                        "images": "https://st.hzcdn.com/fimgs/7a1134f6036bd9d5_6289-w458-h268-b0-p0--.jpg"
+                    "https://www.houzz.com/magazine/pro-tips-for-lighting-10-rooms-and-outdoor-areas-stsetivw-vs~136224262": {
+                        "images": "https://st.hzcdn.com/fimgs/pictures/living-rooms/guest-cottage-kate-nelson-interiors-img~b2212fa80fb6c96a_4602-1-a60d5f1-w458-h268-b0-p0.jpg"
                     }
                 },
-                "./test/test_data/houzz_story_166624763.json",
+                "./test/test_data/houzz/houzz_story_136224262.json",
             )
         ],
     )
@@ -204,6 +286,7 @@ class Test_HouzzExtractor:
         assert answer[0]["title"] == expect[0]["title"]
         assert answer[0]["description"] == expect[0]["description"]
         assert answer[0]["author"] == expect[0]["author"]
+        assert answer[0]["details"] == expect[0]["details"]
         assert answer[0]["link"] == expect[0]["link"]
         assert answer[0]["tags"] == expect[0]["tags"]
         assert answer[0]["related_tags"] == expect[0]["related_tags"]
