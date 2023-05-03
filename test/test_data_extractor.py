@@ -300,25 +300,82 @@ class Test_NewsExtractor:
         """ """
         NewsExtractor()
 
-    @pytest.mark.parametrize("", [])
-    def test_get_playlist_id(self):
+    @pytest.mark.parametrize(
+        "channel_username, expect", [("CNN", "UUupvZG-5ko_eiXAupbDfxWw")]
+    )
+    def test_get_playlist_id(self, channel_username: str, expect: str):
         """ """
-        NewsExtractor()
+        NE = NewsExtractor()
+        answer = NE.get_playlist_id(channel_username=channel_username)
 
-    @pytest.mark.parametrize("", [])
-    def test_get_video_id_list(self):
-        """ """
-        NewsExtractor()
+        assert answer == expect
 
-    @pytest.mark.parametrize("", [])
-    def test_parse_video_metadata(self):
+    @pytest.mark.parametrize(
+        "playlist_id, results_per_page, pages, expect",
+        [
+            ("UUupvZG-5ko_eiXAupbDfxWw", 1, 10, 10),
+            ("UUupvZG-5ko_eiXAupbDfxWw", 5, 5, 25),
+            ("UUupvZG-5ko_eiXAupbDfxWw", 50, 2, 100),
+        ],
+    )
+    def test_get_video_id_list(
+        self, playlist_id: str, results_per_page: int, pages: int, expect: int
+    ):
         """ """
-        NewsExtractor()
+        NE = NewsExtractor()
+        totalResults, nextPageToken, video_id_list = NE.get_video_id_list(
+            playlist_id=playlist_id, results_per_page=results_per_page, pages=pages
+        )
+        print(video_id_list)
 
-    @pytest.mark.parametrize("", [])
-    def test_get_video_info(self):
+        assert totalResults >= 10000
+        assert type(nextPageToken) == str
+        assert len(video_id_list) == expect
+
+    @pytest.mark.parametrize(
+        "meta_path, info_path",
+        [
+            (
+                "./test/test_data/news/news_meta_uQkYUiSqUrY.json",
+                "./test/test_data/news/news_info_uQkYUiSqUrY.json",
+            ),
+            (
+                "./test/test_data/news/news_meta_FzwYMS2zzz0.json",
+                "./test/test_data/news/news_info_FzwYMS2zzz0.json",
+            ),
+        ],
+    )
+    def test_parse_video_metadata(self, meta_path: str, info_path: str):
         """ """
-        NewsExtractor()
+        NE = NewsExtractor()
+        metadata = read_json_data(meta_path)
+        answer = NE.parse_video_metadata(metadata=metadata)
+        expect = read_json_data(info_path)[0]
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "video_id_list, expect_news_info_path",
+        [
+            (["uQkYUiSqUrY"], "./test/test_data/news/news_info_uQkYUiSqUrY.json"),
+            (["FzwYMS2zzz0"], "./test/test_data/news/news_info_FzwYMS2zzz0.json"),
+        ],
+    )
+    def test_get_video_info(self, video_id_list: List[str], expect_news_info_path: str):
+        """ """
+        NE = NewsExtractor()
+        expect = read_json_data(expect_news_info_path)
+        answer = NE.get_video_info(video_id_list=video_id_list)
+
+        # We did not assert to compare likes, comment count and views
+        # Since they might change quite frequently
+        assert answer[0]["uid"] == expect[0]["uid"]
+        assert answer[0]["channel"] == expect[0]["channel"]
+        assert answer[0]["tags"] == expect[0]["tags"]
+        assert answer[0]["posted"] == expect[0]["posted"]
+        assert answer[0]["link"] == expect[0]["link"]
+        assert answer[0]["title"] == expect[0]["title"]
+        assert answer[0]["details"] == expect[0]["details"]
 
 
 class Test_TedtalkExtractor:
