@@ -1,0 +1,53 @@
+{
+    "kind": "youtube#video",
+    "etag": "Ig-lAD90R1pk2rcv0eQ0wASu1OY",
+    "id": "FzwYMS2zzz0",
+    "snippet": {
+        "publishedAt": "2023-05-03T02: 30: 05Z",
+        "channelId": "UCupvZG-5ko_eiXAupbDfxWw",
+        "title": "'Tucker sets the tone': Fired Fox News producer describes atmosphere at company",
+        "description": "Fired Fox News producer Abby Grossberg speaks with CNN's Anderson Cooper about her experience working at the network with talent like Tucker Carlson and Maria Bartriomo. Fox News has denied the claims Grossberg has made in her lawsuits against the network.  #CNN #News",
+        "thumbnails": {
+            "default": {
+                "url": "https://i.ytimg.com/vi/FzwYMS2zzz0/default.jpg",
+                "width": 120,
+                "height": 90
+            },
+            "medium": {
+                "url": "https://i.ytimg.com/vi/FzwYMS2zzz0/mqdefault.jpg",
+                "width": 320,
+                "height": 180
+            },
+            "high": {
+                "url": "https://i.ytimg.com/vi/FzwYMS2zzz0/hqdefault.jpg",
+                "width": 480,
+                "height": 360
+            },
+            "standard": {
+                "url": "https://i.ytimg.com/vi/FzwYMS2zzz0/sddefault.jpg",
+                "width": 640,
+                "height": 480
+            },
+            "maxres": {
+                "url": "https://i.ytimg.com/vi/FzwYMS2zzz0/maxresdefault.jpg",
+                "width": 1280,
+                "height": 720
+            }
+        },
+        "channelTitle": "CNN",
+        "categoryId": "25",
+        "liveBroadcastContent": "none",
+        "defaultLanguage": "en",
+        "localized": {
+            "title": "'Tucker sets the tone': Fired Fox News producer describes atmosphere at company",
+            "description": "Fired Fox News producer Abby Grossberg speaks with CNN's Anderson Cooper about her experience working at the network with talent like Tucker Carlson and Maria Bartriomo. Fox News has denied the claims Grossberg has made in her lawsuits against the network.  #CNN #News"
+        },
+        "defaultAudioLanguage": "en"
+    },
+    "statistics": {
+        "viewCount": "69290",
+        "likeCount": "1080",
+        "favoriteCount": "0",
+        "commentCount": "501"
+    }
+}
