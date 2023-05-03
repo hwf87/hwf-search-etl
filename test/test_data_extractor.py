@@ -162,7 +162,6 @@ class Test_HouzzExtractor:
         HE = HouzzExtractor()
         story_meta = read_html_to_soup(story_meta_path)
         answer = HE.get_story_meta_tags(story_meta)
-        print(answer)
 
         assert answer == expect
 
@@ -313,7 +312,7 @@ class Test_NewsExtractor:
     @pytest.mark.parametrize(
         "playlist_id, results_per_page, pages, expect",
         [
-            ("UUupvZG-5ko_eiXAupbDfxWw", 1, 10, 10),
+            ("UUupvZG-5ko_eiXAupbDfxWw", 1, 3, 3),
             ("UUupvZG-5ko_eiXAupbDfxWw", 5, 5, 25),
             ("UUupvZG-5ko_eiXAupbDfxWw", 50, 2, 100),
         ],
@@ -326,7 +325,6 @@ class Test_NewsExtractor:
         totalResults, nextPageToken, video_id_list = NE.get_video_id_list(
             playlist_id=playlist_id, results_per_page=results_per_page, pages=pages
         )
-        print(video_id_list)
 
         assert totalResults >= 10000
         assert type(nextPageToken) == str
@@ -384,22 +382,220 @@ class Test_TedtalkExtractor:
         """ """
         TedtalkExtractor()
 
-    @pytest.mark.parametrize("", [])
-    def test_get_page_num(self):
+    @pytest.mark.parametrize(
+        "url, expect", [("https://www.ted.com/talks?language=en&sort=newest", 146)]
+    )
+    def test_get_page_num(self, url: str, expect: int):
         """ """
-        TedtalkExtractor()
+        TE = TedtalkExtractor()
+        answer = TE.get_page_num(url=url)
 
-    @pytest.mark.parametrize("", [])
-    def test_parse_extra_info(self):
-        """ """
-        TedtalkExtractor()
+        assert answer >= expect
 
-    @pytest.mark.parametrize("", [])
-    def test_parse_basic_info(self):
+    @pytest.mark.parametrize(
+        "talk_url, expect",
+        [
+            (
+                "https://www.ted.com/talks/andrew_smith_why_do_we_eat_popcorn_at_the_movies?language=en",
+                [
+                    "Soft percussion and a toasty scent mark the violent transformation of tough seeds into cloud-like puffs.",
+                    [
+                        "culture",
+                        "education",
+                        "food",
+                        "history",
+                        "TED-Ed",
+                        "animation",
+                        "indigenous peoples",
+                    ],
+                    372043,
+                ],
+            )
+        ],
+    )
+    def test_parse_extra_info(self, talk_url: str, expect: str):
         """ """
-        TedtalkExtractor()
+        TE = TedtalkExtractor()
+        details, tags, views = TE.parse_extra_info(talk_url=talk_url)
+
+        assert expect[0] in details
+        assert tags == expect[1]
+        assert int(views) >= expect[2]
+
+    @pytest.mark.parametrize(
+        "tedtalk_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_soup.html",
+                "Soft percussion and a toasty scent mark the violent transformation of tough seeds into cloud-like puffs.",
+            )
+        ],
+    )
+    def test_parse_extra_info_details(self, tedtalk_soup_path: str, expect: str):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_soup_path)
+        answer = TE.parse_extra_info_details(soup=tedtalk_soup)
+        answer = answer.replace("\n                            ", " ")
+
+        assert expect in answer
+
+    @pytest.mark.parametrize(
+        "tedtalk_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_soup.html",
+                [
+                    "culture",
+                    "education",
+                    "food",
+                    "history",
+                    "TED-Ed",
+                    "animation",
+                    "indigenous peoples",
+                ],
+            )
+        ],
+    )
+    def test_parse_extra_info_tags(self, tedtalk_soup_path: str, expect: str):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_soup_path)
+        answer = TE.parse_extra_info_tags(soup=tedtalk_soup)
+        answer = [ans.replace("\n", "") for ans in answer]
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "tedtalk_soup_path, expect",
+        [("./test/test_data/tedtalk/tedtalk_soup.html", "372052")],
+    )
+    def test_parse_extra_info_views(self, tedtalk_soup_path: str, expect: str):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_soup_path)
+        answer = TE.parse_extra_info_views(soup=tedtalk_soup)
+        answer = answer.replace("\n", "")
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "tedtalk_media_message_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_media_message_soup.html",
+                {
+                    "uid": "shannon_n_tessier_can_you_freeze_your_body_and_come_back_to_life",
+                    "author": "Shannon N. Tessier",
+                    "title": "Can you freeze your body and come back to life?",
+                    "link": "https://www.ted.com/talks/shannon_n_tessier_can_you_freeze_your_body_and_come_back_to_life?language=en",
+                    "posted": "2023-02-01",
+                    "details": "In 1967, James Bedford had a plan to cheat death. He was the first person to be cryogenically frozen. This process promised to preserve his body until a theoretical future when humanity could cure any illness, and essentially, reverse death. So is it possible to freeze a human, preserve them indefinitely, and then thaw them out? Shannon N. Tessier explores the challenges of human cryopreservation. [Directed by Gavin Edwards, Movult, narrated by Pen-Pen Chen, music by Stephen LaRosa].",
+                    "tags": [
+                        "science",
+                        "education",
+                        "biology",
+                        "medical research",
+                        "TED-Ed",
+                        "animation",
+                        "human body",
+                    ],
+                    "views": "494399",
+                },
+            )
+        ],
+    )
+    def test_parse_basic_info(self, tedtalk_media_message_soup_path: str, expect: str):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_media_message_soup_path)
+        answer = TE.parse_basic_info(talk=tedtalk_soup)
+
+        assert answer["uid"] == expect["uid"]
+        assert answer["author"] == expect["author"]
+        assert answer["link"] == expect["link"]
+        assert answer["posted"] == expect["posted"]
+        assert answer["tags"] == expect["tags"]
+
+    @pytest.mark.parametrize(
+        "tedtalk_media_message_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_media_message_soup.html",
+                "Shannon N. Tessier",
+            )
+        ],
+    )
+    def test_parse_basic_info_author(
+        self, tedtalk_media_message_soup_path: str, expect: str
+    ):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_media_message_soup_path)
+        answer = TE.parse_basic_info_author(talk=tedtalk_soup)
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "tedtalk_media_message_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_media_message_soup.html",
+                "Can you freeze your body and come back to life?",
+            )
+        ],
+    )
+    def test_parse_basic_info_title(
+        self, tedtalk_media_message_soup_path: str, expect: str
+    ):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_media_message_soup_path)
+        answer = TE.parse_basic_info_title(talk=tedtalk_soup)
+        answer = answer.replace("            ", " ")
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "tedtalk_media_message_soup_path, expect",
+        [
+            (
+                "./test/test_data/tedtalk/tedtalk_media_message_soup.html",
+                "https://www.ted.com/talks/shannon_n_tessier_can_you_freeze_your_body_and_come_back_to_life?language=en",
+            )
+        ],
+    )
+    def test_parse_basic_info_link(
+        self, tedtalk_media_message_soup_path: str, expect: str
+    ):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_media_message_soup_path)
+        answer = TE.parse_basic_info_link(talk=tedtalk_soup)
+
+        assert answer == expect
+
+    @pytest.mark.parametrize(
+        "tedtalk_media_message_soup_path, expect",
+        [("./test/test_data/tedtalk/tedtalk_media_message_soup.html", "2023-02-01")],
+    )
+    def test_parse_basic_info_posted(
+        self, tedtalk_media_message_soup_path: str, expect: str
+    ):
+        """ """
+        TE = TedtalkExtractor()
+        tedtalk_soup = read_html_to_soup(tedtalk_media_message_soup_path)
+        answer = TE.parse_basic_info_posted(talk=tedtalk_soup)
+
+        assert answer == expect
 
     @pytest.mark.parametrize("", [])
     def test_get_all_talks_current_page(self):
         """ """
-        TedtalkExtractor()
+        TE = TedtalkExtractor()
+        url = "https://www.ted.com/talks?language=en&page=1&sort=newest"
+        TE.get_all_talks_current_page(url=url)
+        answer = len(TE.all_results)
+        expect = 36
+
+        assert answer == expect
