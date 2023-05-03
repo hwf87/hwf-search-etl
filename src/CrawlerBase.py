@@ -1,5 +1,6 @@
 import requests
 import threading
+import elasticsearch
 from queue import Queue
 from retry import retry
 from bs4 import BeautifulSoup
@@ -128,9 +129,9 @@ class LoaderBase(ABC):
     @retry(tries=5, delay=3, backoff=2, max_delay=60)
     def get_es_client(self) -> Elasticsearch:
         """ """
-        es = Elasticsearch(
+        es = elasticsearch.Elasticsearch(
             elasticsearch_host,
-            basic_auth=(elasticsearch_username, elasticsearch_password),
+            http_auth=(elasticsearch_username, elasticsearch_password),
             verify_certs=False,
         )
         return es

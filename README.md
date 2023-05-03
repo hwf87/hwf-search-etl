@@ -107,6 +107,44 @@ python pipeline.py $RUN_MODE $DATA_SOURCE
 ```
 bash unit_test.sh
 ```
+- Coverage report
+```
+(search_engine) jackyfu@Macbook-air hwf-search-etl % pytest --cov=./src/ test
+============================================================================= test session starts =============================================================================
+platform darwin -- Python 3.8.10, pytest-7.2.2, pluggy-1.0.0
+rootdir: /Users/jackyfu/Desktop/hwf87_git/hwf-search-etl
+plugins: mock-3.10.0, cov-4.0.0
+collected 86 items
+
+test/test_CrawlerBase.py .......................                                                                                                                        [ 26%]
+test/test_ProcessorBase.py sss                                                                                                                                          [ 30%]
+test/test_data_extractor.py s................s........s...........                                                                                                      [ 74%]
+test/test_data_loader.py ......                                                                                                                                         [ 81%]
+test/test_data_transformer.py ......                                                                                                                                    [ 88%]
+test/test_init_objects.py ..........                                                                                                                                    [100%]
+
+---------- coverage: platform darwin, python 3.8.10-final-0 ----------
+Name                                      Stmts   Miss  Cover
+-------------------------------------------------------------
+src/CrawlerBase.py                          100      5    95%
+src/ProcessorBase.py                         45     19    58%
+src/__init__.py                               0      0   100%
+src/houzz/houzz_data_extractor.py           128     33    74%
+src/houzz/houzz_data_loader.py               24      0   100%
+src/houzz/houzz_data_transformer.py          32      0   100%
+src/news/__init__.py                          0      0   100%
+src/news/news_data_extractor.py              67     11    84%
+src/news/news_data_loader.py                 24      0   100%
+src/news/news_data_transformer.py            32      0   100%
+src/tedtalk/__init__.py                       0      0   100%
+src/tedtalk/tedtalk_data_extractor.py       111     22    80%
+src/tedtalk/tedtalk_data_loader.py           24      0   100%
+src/tedtalk/tedtalk_data_transformer.py      32      0   100%
+-------------------------------------------------------------
+TOTAL                                       619     90    85%
+
+=========================================================== 80 passed, 6 skipped, 19 warnings in 399.29s (0:06:39) ============================================================
+```
 
 ## Precommit
 - Black config: find ```pyproject.toml```
