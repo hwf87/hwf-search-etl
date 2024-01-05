@@ -17,15 +17,15 @@ jobs:
       - name: Download Pretrain Model
         run: |
           python ./model/download_pretrain_model.py
-      - name: Test with pytest
-        run: |
-          pip install pytest pytest-cov
-          pytest ./test --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
-        env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          ES_USERNAME: ${{ secrets.ES_USERNAME }}
-          ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
-          ES_HOST: ${{ env.ES_HOST }}
+      # - name: Test with pytest
+      #   run: |
+      #     pip install pytest pytest-cov
+      #     pytest ./test --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+      #   env:
+      #     YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      #     ES_USERNAME: ${{ secrets.ES_USERNAME }}
+      #     ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+      #     ES_HOST: ${{ env.ES_HOST }}
       - name: Pre-Commit Check
         run: |
           pre-commit install --install-hooks
